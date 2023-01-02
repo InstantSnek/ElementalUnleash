@@ -17,10 +17,10 @@ namespace Bluemagic.Tiles
             WorldGen.Convert(i, j, 0, 0);
         }
 
-        public override bool ValidTile(int i, int j)
+        public override bool IsTileValidForEntity(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            return tile.active() && tile.type == mod.TileType("ElementalPurge") && tile.frameX == 0 && tile.frameY == 0;
+            return tile.HasTile && tile.TileType == mod.TileType("ElementalPurge") && tile.TileFrameX == 0 && tile.TileFrameY == 0;
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)

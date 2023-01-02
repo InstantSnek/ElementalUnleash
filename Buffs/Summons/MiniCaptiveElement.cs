@@ -6,7 +6,7 @@ namespace Bluemagic.Buffs.Summons
 {
     public class MiniCaptiveElement : ModBuff
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Mini Captive Elements");
             Description.SetDefault("The mini captive elements will fight for you.");
@@ -17,7 +17,7 @@ namespace Bluemagic.Buffs.Summons
         public override void Update(Player player, ref int buffIndex)
         {
             BluemagicPlayer modPlayer = player.GetModPlayer<BluemagicPlayer>();
-            if (player.ownedProjectileCounts[mod.ProjectileType("MiniCaptiveElement0")] > 0)
+            if (player.ownedProjectileCounts[Mod.Find<ModProjectile>("MiniCaptiveElement0").Type] > 0)
             {
                 modPlayer.elementMinion = true;
             }

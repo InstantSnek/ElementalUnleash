@@ -11,18 +11,18 @@ namespace Bluemagic.Projectiles
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Salt Ball");
-            ProjectileID.Sets.ForcePlateDetection[projectile.type] = true;
+            ProjectileID.Sets.ForcePlateDetection[Projectile.type] = true;
         }
 
         public override void SetDefaults()
         {
-            projectile.knockBack = 6f;
-            projectile.width = 10;
-            projectile.height = 10;
-            projectile.friendly = true;
-            projectile.hostile = true;
-            projectile.penetrate = -1;
-            tileType = mod.TileType("SaltBlock");
+            Projectile.knockBack = 6f;
+            Projectile.width = 10;
+            Projectile.height = 10;
+            Projectile.friendly = true;
+            Projectile.hostile = true;
+            Projectile.penetrate = -1;
+            tileType = Mod.Find<ModTile>("SaltBlock").Type;
             dustType = 13;
         }
     }

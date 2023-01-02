@@ -17,28 +17,27 @@ namespace Bluemagic.Items.Purium.Armor
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.defense = 30;
-            item.rare = 11;
-            item.value = Item.sellPrice(0, 6, 0, 0);
+            Item.width = 18;
+            Item.height = 18;
+            Item.defense = 30;
+            Item.rare = 11;
+            Item.value = Item.sellPrice(0, 6, 0, 0);
         }
 
         public override void UpdateEquip(Player player)
         {
-            player.meleeDamage += 0.15f;
-            player.meleeCrit += 10;
-            player.meleeSpeed += 0.16f;
+            player.GetDamage(DamageClass.Melee) += 0.15f;
+            player.GetCritChance(DamageClass.Generic) += 10;
+            player.GetAttackSpeed(DamageClass.Melee) += 0.16f;
             player.moveSpeed += 0.04f;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(null, "PuriumBar", 10);
             recipe.AddTile(null, "PuriumAnvil");
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 }

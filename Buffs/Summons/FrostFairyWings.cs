@@ -6,7 +6,7 @@ namespace Bluemagic.Buffs.Summons
 {
     public class FrostFairyWings : ModBuff
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Wings of the Frost Fairy");
             Description.SetDefault("The Wings of the Frost Fairy will fight for you.");
@@ -17,7 +17,7 @@ namespace Bluemagic.Buffs.Summons
         public override void Update(Player player, ref int buffIndex)
         {
             BluemagicPlayer modPlayer = player.GetModPlayer<BluemagicPlayer>();
-            if (player.ownedProjectileCounts[mod.ProjectileType("FrostFairyWingsProj")] > 0)
+            if (player.ownedProjectileCounts[Mod.Find<ModProjectile>("FrostFairyWingsProj").Type] > 0)
             {
                 modPlayer.frostFairy = true;
             }

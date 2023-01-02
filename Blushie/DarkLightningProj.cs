@@ -16,24 +16,24 @@ namespace Bluemagic.Blushie
 
         public override void SetDefaults()
         {
-            projectile.width = 1600;
-            projectile.height = 1600;
-            projectile.friendly = true;
-            projectile.alpha = 0;
-            projectile.penetrate = -1;
-            projectile.ignoreWater = true;
-            projectile.tileCollide = false;
-            projectile.usesLocalNPCImmunity = true;
-            projectile.localNPCHitCooldown = 5;
+            Projectile.width = 1600;
+            Projectile.height = 1600;
+            Projectile.friendly = true;
+            Projectile.alpha = 0;
+            Projectile.penetrate = -1;
+            Projectile.ignoreWater = true;
+            Projectile.tileCollide = false;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 5;
         }
 
         public override void AI()
         {
-            projectile.Center = Main.player[projectile.owner].Center;
-            projectile.alpha += 10;
-            if (projectile.alpha >= 200)
+            Projectile.Center = Main.player[Projectile.owner].Center;
+            Projectile.alpha += 10;
+            if (Projectile.alpha >= 200)
             {
-                projectile.Kill();
+                Projectile.Kill();
             }
         }
 
@@ -42,25 +42,25 @@ namespace Bluemagic.Blushie
             damage += target.defense / 2;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             List<Vector2> positions = new List<Vector2>();
             for (int k = 0; k < 200; k++)
             {
-                if (Main.npc[k].active && !Main.npc[k].friendly && !Main.npc[k].dontTakeDamage && projectile.Hitbox.Intersects(Main.npc[k].Hitbox))
+                if (Main.npc[k].active && !Main.npc[k].friendly && !Main.npc[k].dontTakeDamage && Projectile.Hitbox.Intersects(Main.npc[k].Hitbox))
                 {
                     positions.Add(Main.npc[k].Center);
                 }
             }
             while (positions.Count < 9)
             {
-                positions.Add(projectile.Center + new Vector2((Main.rand.NextFloat() - 0.5f) * projectile.width * 0.5f, (Main.rand.NextFloat() - 0.5f) * projectile.height * 0.5f));
+                positions.Add(Projectile.Center + new Vector2((Main.rand.NextFloat() - 0.5f) * Projectile.width * 0.5f, (Main.rand.NextFloat() - 0.5f) * Projectile.height * 0.5f));
             }
             Queue<Vector2> process = new Queue<Vector2>();
             const int splitFactor = 2;
             for (int k = 0; k < splitFactor + 1; k++)
             {
-                process.Enqueue(projectile.Center);
+                process.Enqueue(Projectile.Center);
             }
             while (positions.Count > 0)
             {

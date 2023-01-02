@@ -15,15 +15,15 @@ namespace Bluemagic.Items.Phantom
 
         public override void SetDefaults()
         {
-            item.maxStack = 999;
-            item.consumable = true;
-            item.width = 24;
-            item.height = 24;
-            item.rare = 8;
-            item.expert = true;
+            Item.maxStack = 999;
+            Item.consumable = true;
+            Item.width = 24;
+            Item.height = 24;
+            Item.rare = 8;
+            Item.expert = true;
         }
 
-        public override int BossBagNPC => mod.NPCType("Phantom");
+        public override int BossBagNPC => Mod.Find<ModNPC>("Phantom").Type;
 
         public override bool CanRightClick()
         {
@@ -35,27 +35,27 @@ namespace Bluemagic.Items.Phantom
             player.TryGettingDevArmor();
             if (Main.rand.Next(7) == 0)
             {
-                player.QuickSpawnItem(mod.ItemType("PhantomMask"));
+                player.QuickSpawnItem(Mod.Find<ModItem>("PhantomMask").Type);
             }
-            player.QuickSpawnItem(mod.ItemType("PhantomPlate"), Main.rand.Next(8, 13));
+            player.QuickSpawnItem(Mod.Find<ModItem>("PhantomPlate").Type, Main.rand.Next(8, 13));
             int reward = 0;
             switch (Main.rand.Next(4))
             {
             case 0:
-                reward = mod.ItemType("PhantomBlade");
+                reward = Mod.Find<ModItem>("PhantomBlade").Type;
                 break;
             case 1:
-                reward = mod.ItemType("SpectreGun");
+                reward = Mod.Find<ModItem>("SpectreGun").Type;
                 break;
             case 2:
-                reward = mod.ItemType("PhantomSphere");
+                reward = Mod.Find<ModItem>("PhantomSphere").Type;
                 break;
             case 3:
-                reward = mod.ItemType("PaladinStaff");
+                reward = Mod.Find<ModItem>("PaladinStaff").Type;
                 break;
             }
             player.QuickSpawnItem(reward);
-            player.QuickSpawnItem(mod.ItemType("PhantomShield"));
+            player.QuickSpawnItem(Mod.Find<ModItem>("PhantomShield").Type);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Bluemagic.Buffs
 {
     public class Bubbleshield : ModBuff
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Bubbleshield");
             Description.SetDefault("Increases defense by 12 and reduces damage taken by 12%");

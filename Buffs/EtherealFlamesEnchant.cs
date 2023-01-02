@@ -6,7 +6,7 @@ namespace Bluemagic.Buffs
 {
     public class EtherealFlamesEnchant : ModBuff
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Weapon Imbue: Ethereal Flames");
             Description.SetDefault("Melee attacks inflict ethereal flames");

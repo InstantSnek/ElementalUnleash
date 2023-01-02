@@ -9,17 +9,17 @@ namespace Bluemagic.Tiles
 {
     public class DarkBlueIce : BaseMushroomTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileSolid[Type] = true;
             Main.tileBrick[Type] = true;
             Main.tileMerge[Type] = TileID.Sets.Snow;
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
-            soundType = 2;
-            soundStyle = 50;
-            dustType = 17;
-            drop = mod.ItemType("DarkBlueIce");
+            HitSound = 2;
+            soundStyle/* tModPorter Note: Removed. Integrate into HitSound */ = 50;
+            DustType = 17;
+            ItemDrop = Mod.Find<ModItem>("DarkBlueIce").Type;
             AddMapEntry(new Color(93, 127, 255));
             TileID.Sets.Conversion.Ice[Type] = true;
             TileID.Sets.Ices[Type] = true;

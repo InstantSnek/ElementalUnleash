@@ -6,7 +6,7 @@ namespace Bluemagic.Buffs.Summons
 {
     public class MiniPaladin : ModBuff
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Mini Paladin");
             Description.SetDefault("A mini paladin will fight for you.");
@@ -17,7 +17,7 @@ namespace Bluemagic.Buffs.Summons
         public override void Update(Player player, ref int buffIndex)
         {
             BluemagicPlayer modPlayer = player.GetModPlayer<BluemagicPlayer>();
-            if (player.ownedProjectileCounts[mod.ProjectileType("MiniPaladin")] > 0)
+            if (player.ownedProjectileCounts[Mod.Find<ModProjectile>("MiniPaladin").Type] > 0)
             {
                 modPlayer.paladinMinion = true;
             }

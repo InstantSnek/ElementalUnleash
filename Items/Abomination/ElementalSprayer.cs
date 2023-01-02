@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -15,30 +16,30 @@ namespace Bluemagic.Items.Abomination
 
         public override void SetDefaults()
         {
-            item.useStyle = 5;
-            item.autoReuse = true;
-            item.useAnimation = 30;
-            item.useTime = 5;
-            item.width = 54;
-            item.height = 14;
-            item.shoot = mod.ProjectileType("ElementalSpray");
-            item.useAmmo = AmmoID.Gel;
-            item.UseSound = SoundID.Item34;
-            item.damage = 240;
-            item.knockBack = 0.5f;
-            item.shootSpeed = 10f;
-            item.noMelee = true;
-            item.value = Item.sellPrice(0, 15, 0, 0);
-            item.rare = 10;
-            item.ranged = true;
+            Item.useStyle = 5;
+            Item.autoReuse = true;
+            Item.useAnimation = 30;
+            Item.useTime = 5;
+            Item.width = 54;
+            Item.height = 14;
+            Item.shoot = Mod.Find<ModProjectile>("ElementalSpray").Type;
+            Item.useAmmo = AmmoID.Gel;
+            Item.UseSound = SoundID.Item34;
+            Item.damage = 240;
+            Item.knockBack = 0.5f;
+            Item.shootSpeed = 10f;
+            Item.noMelee = true;
+            Item.value = Item.sellPrice(0, 15, 0, 0);
+            Item.rare = 10;
+            Item.DamageType = DamageClass.Ranged;
         }
 
-        public override bool ConsumeAmmo(Player player)
+        public override bool CanConsumeAmmo(Item ammo, Player player)
         {
             return Main.rand.Next(4) != 0;
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             Projectile.NewProjectile(position, new Vector2(speedX, speedY), type, damage, knockBack, Main.myPlayer, Main.rand.Next(6));
             return false;
@@ -48,35 +49,31 @@ namespace Bluemagic.Items.Abomination
         {
             if (Bluemagic.Sushi != null)
             {
-                ModRecipe recipe;
+                Recipe recipe;
 
-                recipe = new ModRecipe(mod);
+                recipe = CreateRecipe();
                 recipe.AddIngredient(null, "ElementalYoyo");
-                recipe.AddIngredient(Bluemagic.Sushi.ItemType("SwapToken"));
+                recipe.AddIngredient(Bluemagic.Sushi.Find<ModItem>("SwapToken").Type);
                 recipe.AddTile(TileID.TinkerersWorkbench);
-                recipe.SetResult(this);
-                recipe.AddRecipe();
+                recipe.Register();
 
-                recipe = new ModRecipe(mod);
+                recipe = CreateRecipe();
                 recipe.AddIngredient(null, "EyeballTome");
-                recipe.AddIngredient(Bluemagic.Sushi.ItemType("SwapToken"));
+                recipe.AddIngredient(Bluemagic.Sushi.Find<ModItem>("SwapToken").Type);
                 recipe.AddTile(TileID.TinkerersWorkbench);
-                recipe.SetResult(this);
-                recipe.AddRecipe();
+                recipe.Register();
 
-                recipe = new ModRecipe(mod);
+                recipe = CreateRecipe();
                 recipe.AddIngredient(null, "ElementalStaff");
-                recipe.AddIngredient(Bluemagic.Sushi.ItemType("SwapToken"));
+                recipe.AddIngredient(Bluemagic.Sushi.Find<ModItem>("SwapToken").Type);
                 recipe.AddTile(TileID.TinkerersWorkbench);
-                recipe.SetResult(this);
-                recipe.AddRecipe();
+                recipe.Register();
 
-                recipe = new ModRecipe(mod);
+                recipe = CreateRecipe();
                 recipe.AddIngredient(null, "EyeballGlove");
-                recipe.AddIngredient(Bluemagic.Sushi.ItemType("SwapToken"));
+                recipe.AddIngredient(Bluemagic.Sushi.Find<ModItem>("SwapToken").Type);
                 recipe.AddTile(TileID.TinkerersWorkbench);
-                recipe.SetResult(this);
-                recipe.AddRecipe();
+                recipe.Register();
             }
         }
     }

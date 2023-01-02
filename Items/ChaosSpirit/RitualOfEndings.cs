@@ -16,26 +16,26 @@ namespace Bluemagic.Items.ChaosSpirit
 
         public override void SetDefaults()
         {
-            item.width = 20;
-            item.height = 20;
-            item.value = Item.sellPrice(0, 50, 0, 0);
-            item.rare = 11;
-            item.useAnimation = 45;
-            item.useTime = 45;
-            item.useStyle = 4;
-            item.UseSound = SoundID.Item44;
+            Item.width = 20;
+            Item.height = 20;
+            Item.value = Item.sellPrice(0, 50, 0, 0);
+            Item.rare = 11;
+            Item.useAnimation = 45;
+            Item.useTime = 45;
+            Item.useStyle = 4;
+            Item.UseSound = SoundID.Item44;
         }
 
         public override bool CanUseItem(Player player)
         {
-            return !NPC.AnyNPCs(mod.NPCType("PuritySpirit")) && !NPC.AnyNPCs(mod.NPCType("ChaosSpirit")) && !NPC.AnyNPCs(mod.NPCType("ChaosSpirit2")) && !NPC.AnyNPCs(mod.NPCType("ChaosSpirit3"));
+            return !NPC.AnyNPCs(Mod.Find<ModNPC>("PuritySpirit").Type) && !NPC.AnyNPCs(Mod.Find<ModNPC>("ChaosSpirit").Type) && !NPC.AnyNPCs(Mod.Find<ModNPC>("ChaosSpirit2").Type) && !NPC.AnyNPCs(Mod.Find<ModNPC>("ChaosSpirit3").Type);
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)/* tModPorter Suggestion: Return null instead of false */
         {
             if (Main.netMode != 1)
             {
-                NPC.NewNPC((int)player.Center.X, (int)player.Center.Y - 240, mod.NPCType("ChaosSpirit"));
+                NPC.NewNPC((int)player.Center.X, (int)player.Center.Y - 240, Mod.Find<ModNPC>("ChaosSpirit").Type);
             }
             return true;
         }
@@ -47,7 +47,7 @@ namespace Bluemagic.Items.ChaosSpirit
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(null, "InfinityCrystal");
             recipe.AddIngredient(null, "FoulOrb", 5);
             recipe.AddIngredient(ItemID.Wood, 500);
@@ -64,16 +64,15 @@ namespace Bluemagic.Items.ChaosSpirit
             }
             else
             {
-                recipe.AddIngredient(Bluemagic.Calamity.ItemType("CosmiliteBar"), 10);
+                recipe.AddIngredient(Bluemagic.Calamity.Find<ModItem>("CosmiliteBar").Type, 10);
             }
             if (Bluemagic.Thorium != null)
             {
-                recipe.AddIngredient(Bluemagic.Thorium.ItemType("OceanEssence"), 3);
-                recipe.AddIngredient(Bluemagic.Thorium.ItemType("DeathEssence"), 3);
-                recipe.AddIngredient(Bluemagic.Thorium.ItemType("InfernoEssence"), 3);
+                recipe.AddIngredient(Bluemagic.Thorium.Find<ModItem>("OceanEssence").Type, 3);
+                recipe.AddIngredient(Bluemagic.Thorium.Find<ModItem>("DeathEssence").Type, 3);
+                recipe.AddIngredient(Bluemagic.Thorium.Find<ModItem>("InfernoEssence").Type, 3);
             }
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 }

@@ -17,11 +17,11 @@ namespace Bluemagic.Tiles
             Tile above = Main.tile[i, j - 1];
             Tile below = Main.tile[i, j + 1];
             bool canFall = true;
-            if (below == null || below.active())
+            if (below == null || below.HasTile)
             {
                 canFall = false;
             }
-            if (above.active() && (TileID.Sets.BasicChest[above.type] || TileID.Sets.BasicChestFake[above.type] || above.type == TileID.PalmTree || TileLoader.IsDresser(above.type)))
+            if (above.HasTile && (TileID.Sets.BasicChest[above.TileType] || TileID.Sets.BasicChestFake[above.TileType] || above.TileType == TileID.PalmTree || TileLoader.IsDresser(above.TileType)))
             {
                 canFall = false;
             }
@@ -39,7 +39,7 @@ namespace Bluemagic.Tiles
                 }
                 else if (Main.netMode == 2)
                 {
-                    Main.tile[i, j].active(false);
+                    Main.tile[i, j].HasTile = false;
                     bool spawnProj = true;
                     for (int k = 0; k < 1000; k++)
                     {

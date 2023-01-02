@@ -14,11 +14,11 @@ namespace Bluemagic.Items.Salt
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 14;
-            item.maxStack = 999;
-            item.rare = 8;
-            item.value = 100;
+            Item.width = 16;
+            Item.height = 14;
+            Item.maxStack = 999;
+            Item.rare = 8;
+            Item.value = 100;
         }
     }
 }

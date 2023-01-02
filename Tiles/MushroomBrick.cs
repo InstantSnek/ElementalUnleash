@@ -8,17 +8,17 @@ namespace Bluemagic.Tiles
 {
     public class MushroomBrick : ModTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileSolid[Type] = true;
             Main.tileBrick[Type] = true;
             Main.tileMergeDirt[Type] = true;
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
-            soundType = 21;
-            soundStyle = 1;
-            dustType = 17;
-            drop = mod.ItemType("MushroomBrick");
+            HitSound = 21;
+            soundStyle/* tModPorter Note: Removed. Integrate into HitSound */ = 1;
+            DustType = 17;
+            ItemDrop = Mod.Find<ModItem>("MushroomBrick").Type;
             AddMapEntry(new Color(93, 127, 255));
         }
 

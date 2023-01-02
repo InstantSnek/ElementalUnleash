@@ -15,27 +15,26 @@ namespace Bluemagic.Items.PurityCraft
 
         public override void SetDefaults()
         {
-            item.width = 28;
-            item.height = 28;
-            item.alpha = 75;
-            item.useTime = 20;
-            item.useAnimation = 20;
-            item.useStyle = 1;
-            item.value = Item.sellPrice(0, 30, 0, 0);
-            item.rare = 11;
-            item.UseSound = SoundID.Item25;
-            item.noMelee = true;
-            item.mountType = mod.MountType("PurityShield");
+            Item.width = 28;
+            Item.height = 28;
+            Item.alpha = 75;
+            Item.useTime = 20;
+            Item.useAnimation = 20;
+            Item.useStyle = 1;
+            Item.value = Item.sellPrice(0, 30, 0, 0);
+            Item.rare = 11;
+            Item.UseSound = SoundID.Item25;
+            Item.noMelee = true;
+            Item.mountType = Mod.Find<ModMount>("PurityShield").Type;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.CosmicCarKey);
             recipe.AddIngredient(null, "InfinityCrystal", 3);
             recipe.AddTile(null, "PuriumAnvil");
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 }

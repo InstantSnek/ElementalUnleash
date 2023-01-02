@@ -12,21 +12,21 @@ namespace Bluemagic.Items.Abomination
         {
             DisplayName.SetDefault("Six-Color Shield");
             Tooltip.SetDefault("Creates elemental energy to protect you when damaged.");
-            Main.RegisterItemAnimation(item.type, new DrawAnimationVertical(10, 4));
+            Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(10, 4));
         }
 
         public override void SetDefaults()
         {
-            item.width = 24;
-            item.height = 24;
-            item.value = Item.buyPrice(0, 10, 0, 0);
-            item.rare = 9;
-            item.expert = true;
-            item.accessory = true;
-            item.damage = 120;
-            item.magic = true;
-            item.knockBack = 2f;
-            item.defense = 6;
+            Item.width = 24;
+            Item.height = 24;
+            Item.value = Item.buyPrice(0, 10, 0, 0);
+            Item.rare = 9;
+            Item.expert = true;
+            Item.accessory = true;
+            Item.damage = 120;
+            Item.DamageType = DamageClass.Magic;
+            Item.knockBack = 2f;
+            Item.defense = 6;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual)

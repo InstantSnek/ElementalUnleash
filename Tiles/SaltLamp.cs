@@ -11,19 +11,19 @@ namespace Bluemagic.Tiles
 {
     public class SaltLamp : ModTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileFrameImportant[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2);
             TileObjectData.newTile.LavaDeath = false;
             TileObjectData.addTile(Type);
             AddMapEntry(new Color(150, 10, 10));
-            dustType = 13;
+            DustType = 13;
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(i * 16, j * 16, 16, 32, mod.ItemType("SaltLamp"));
+            Item.NewItem(i * 16, j * 16, 16, 32, Mod.Find<ModItem>("SaltLamp").Type);
         }
 
         public override void NearbyEffects(int i, int j, bool closer)

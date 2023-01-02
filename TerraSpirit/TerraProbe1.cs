@@ -14,9 +14,9 @@ namespace Bluemagic.TerraSpirit
             if (Timer >= 90)
             {
                 Timer = 0;
-                TerraSpirit spirit = (TerraSpirit)Spirit.modNPC;
+                TerraSpirit spirit = (TerraSpirit)Spirit.ModNPC;
                 Player target = spirit.GetTarget();
-                spirit.bullets.Add(new BulletExplode(npc.Center, target.Center));
+                spirit.bullets.Add(new BulletExplode(NPC.Center, target.Center));
             }
         }
     }

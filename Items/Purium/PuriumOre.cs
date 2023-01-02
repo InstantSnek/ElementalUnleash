@@ -14,18 +14,18 @@ namespace Bluemagic.Items.Purium
 
         public override void SetDefaults()
         {
-            item.width = 12;
-            item.height = 12;
-            item.maxStack = 999;
-            item.useTurn = true;
-            item.autoReuse = true;
-            item.useAnimation = 15;
-            item.useTime = 10;
-            item.useStyle = 1;
-            item.consumable = true;
-            item.rare = 11;
-            item.value = Item.sellPrice(0, 0, 20, 0);
-            item.createTile = mod.TileType("PuriumOre");
+            Item.width = 12;
+            Item.height = 12;
+            Item.maxStack = 999;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = 1;
+            Item.consumable = true;
+            Item.rare = 11;
+            Item.value = Item.sellPrice(0, 0, 20, 0);
+            Item.createTile = Mod.Find<ModTile>("PuriumOre").Type;
         }
     }
 }

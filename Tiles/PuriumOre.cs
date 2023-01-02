@@ -9,7 +9,7 @@ namespace Bluemagic.Tiles
 {
     public class PuriumOre : ModTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileSolid[Type] = true;
             Main.tileMergeDirt[Type] = true;
@@ -17,14 +17,14 @@ namespace Bluemagic.Tiles
             Main.tileShine[Type] = 800;
             Main.tileShine2[Type] = true;
             Main.tileSpelunker[Type] = true;
-            Main.tileValue[Type] = 750;
+            Main.tileOreFinderPriority[Type] = 750;
             TileID.Sets.Ore[Type] = true;
-            soundType = 21;
-            soundStyle = 1;
-            dustType = 128;
-            drop = mod.ItemType("PuriumOre");
-            minPick = 225;
-            mineResist = 5f;
+            HitSound = 21;
+            soundStyle/* tModPorter Note: Removed. Integrate into HitSound */ = 1;
+            DustType = 128;
+            ItemDrop = Mod.Find<ModItem>("PuriumOre").Type;
+            MinPick = 225;
+            MineResist = 5f;
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Purium");
             AddMapEntry(new Color(100, 210, 100), name);
@@ -38,9 +38,9 @@ namespace Bluemagic.Tiles
                 {
                     WorldGen.Convert(i + x, j + y, 0, 0);
                     Tile tile = Main.tile[i + x, j + y];
-                    if (tile.active() && (tile.type == TileID.Demonite || tile.type == TileID.Crimtane) && Main.rand.Next(3) == 0)
+                    if (tile.HasTile && (tile.TileType == TileID.Demonite || tile.TileType == TileID.Crimtane) && Main.rand.Next(3) == 0)
                     {
-                        tile.type = (ushort)mod.TileType("PuriumOre");
+                        tile.TileType = (ushort)Mod.Find<ModTile>("PuriumOre").Type;
                         NetMessage.SendTileRange(Main.myPlayer, i + x, j + y, 1, 1);
                     }
                 }

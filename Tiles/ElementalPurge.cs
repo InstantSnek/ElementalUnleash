@@ -11,7 +11,7 @@ namespace Bluemagic.Tiles
 {
     public class ElementalPurge : ModTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileFrameImportant[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
@@ -23,13 +23,13 @@ namespace Bluemagic.Tiles
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Elemental Purge");
             AddMapEntry(new Color(190, 230, 190), name);
-            dustType = 11;
-            disableSmartCursor = true;
+            DustType = 11;
+            disableSmartCursor/* tModPorter Note: Removed. Use TileID.Sets.DisableSmartCursor instead */ = true;
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(i * 16, j * 16, 32, 48, mod.ItemType("ElementalPurge"));
+            Item.NewItem(i * 16, j * 16, 32, 48, Mod.Find<ModItem>("ElementalPurge").Type);
             ModContent.GetInstance<TEElementalPurge>().Kill(i, j);
         }
 
@@ -41,8 +41,8 @@ namespace Bluemagic.Tiles
             {
                 zero = Vector2.Zero;
             }
-            int height = tile.frameY == 36 ? 18 : 16;
-            Main.spriteBatch.Draw(mod.GetTexture("Tiles/ElementalPurge_Glow"), new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, new Rectangle(tile.frameX, tile.frameY, 16, height), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            int height = tile.TileFrameY == 36 ? 18 : 16;
+            Main.spriteBatch.Draw(Mod.GetTexture("Tiles/ElementalPurge_Glow"), new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + zero, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, height), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
         }
 
         public override bool AutoSelect(int i, int j, Item item)

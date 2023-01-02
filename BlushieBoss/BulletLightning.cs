@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace Bluemagic.BlushieBoss
 {
@@ -54,7 +55,7 @@ namespace Bluemagic.BlushieBoss
             }
             if (Main.rand.Next(20) == 0)
             {
-                int dust = Dust.NewDust(Position - new Vector2(Size), 32, 32, Bluemagic.Instance.DustType("PurpleLightning"), 0f, 0f, 100, default(Color), 1f);
+                int dust = Dust.NewDust(Position - new Vector2(Size), 32, 32, Bluemagic.Instance.Find<ModDust>("PurpleLightning").Type, 0f, 0f, 100, default(Color), 1f);
                 Main.dust[dust].velocity *= 0.5f;
                 Main.dust[dust].velocity += Velocity;
                 Main.dust[dust].position += Velocity;

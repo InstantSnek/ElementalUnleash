@@ -9,7 +9,7 @@ namespace Bluemagic.Tiles
 {
     public class BossTrophy : ModTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileFrameImportant[Type] = true;
             Main.tileLavaDeath[Type] = true;
@@ -17,8 +17,8 @@ namespace Bluemagic.Tiles
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.newTile.StyleWrapLimit = 36;
             TileObjectData.addTile(Type);
-            dustType = 7;
-            disableSmartCursor = true;
+            DustType = 7;
+            disableSmartCursor/* tModPorter Note: Removed. Use TileID.Sets.DisableSmartCursor instead */ = true;
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Trophy");
             AddMapEntry(new Color(120, 85, 60), name);
@@ -30,25 +30,25 @@ namespace Bluemagic.Tiles
             switch (frameX / 54)
             {
                 case 0:
-                    item = mod.ItemType("AbominationTrophy");
+                    item = Mod.Find<ModItem>("AbominationTrophy").Type;
                     break;
                 case 1:
-                    item = mod.ItemType("PuritySpiritTrophy");
+                    item = Mod.Find<ModItem>("PuritySpiritTrophy").Type;
                     break;
                 case 2:
-                    item = mod.ItemType("BunnyTrophy");
+                    item = Mod.Find<ModItem>("BunnyTrophy").Type;
                     break;
                 case 3:
-                    item = mod.ItemType("TreeTrophy");
+                    item = Mod.Find<ModItem>("TreeTrophy").Type;
                     break;
                 case 4:
-                    item = mod.ItemType("ChaosTrophy");
+                    item = Mod.Find<ModItem>("ChaosTrophy").Type;
                     break;
                 case 5:
-                    item = mod.ItemType("CataclysmTrophy");
+                    item = Mod.Find<ModItem>("CataclysmTrophy").Type;
                     break;
                 case 6:
-                    item = mod.ItemType("PhantomTrophy");
+                    item = Mod.Find<ModItem>("PhantomTrophy").Type;
                     break;
             }
             if (item > 0)

@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -46,12 +47,17 @@ namespace Bluemagic
 
         public Bluemagic()
         {
-            Properties = new ModProperties()
-            {
+            ContentAutoloadingEnabled = true;
+            GoreAutoloadingEnabled = true;
+            MusicAutoloadingEnabled = true;
+            
+            //Properties/* tModPorter Note: Removed. Instead, assign the properties directly (ContentAutoloadingEnabled, GoreAutoloadingEnabled, MusicAutoloadingEnabled, and BackgroundAutoloadingEnabled) */ = new ModProperties()
+            /*{
                 Autoload = true,
                 AutoloadGores = true,
                 AutoloadSounds = true
             };
+            */
         }
 
         public override void Load()
@@ -65,7 +71,7 @@ namespace Bluemagic
                 }
             }
             InterfaceHelper.Initialize();
-            AddEquipTexture(null, EquipType.Back, "DarkLightningPack_Back", "Bluemagic/Blushie/DarkLightningPack_Back");
+            EquipLoader.AddEquipTexture(this, "Bluemagic/Blushie/DarkLightningPack_Back", EquipType.Back, name: "DarkLightningPack_Back");
             for (int k = 1; k <= 4; k++)
             {
                 AddBossHeadTexture(captiveElementHead + k);
@@ -95,124 +101,124 @@ namespace Bluemagic
                 bossList.Call(
                     "AddBoss",
                     12.05f,
-                    Bluemagic.Instance.NPCType("Phantom"),
+                    Bluemagic.Instance.Find<ModNPC>("Phantom").Type,
                     this,
                     "The Phantom",
                     (Func<bool>)(() => BluemagicWorld.downedPhantom),
-                    Bluemagic.Instance.ItemType("PaladinEmblem"),
-                    new List<int> {Bluemagic.Instance.ItemType("PhantomTrophy"), Bluemagic.Instance.ItemType("PhantomMask")},
-                    new List<int> {Bluemagic.Instance.ItemType("PhantomBag"), Bluemagic.Instance.ItemType("PhantomPlate"), Bluemagic.Instance.ItemType("PhantomBlade"), Bluemagic.Instance.ItemType("SpectreGun"), Bluemagic.Instance.ItemType("PhantomSphere"), Bluemagic.Instance.ItemType("PaladinStaff"), ItemID.GreaterHealingPotion},
-                    string.Format("Use a [i:{0}] in the Dungeon (Plantera must be defeated)", ItemType("PaladinEmblem")));
+                    Bluemagic.Instance.Find<ModItem>("PaladinEmblem").Type,
+                    new List<int> {Bluemagic.Instance.Find<ModItem>("PhantomTrophy").Type, Bluemagic.Instance.Find<ModItem>("PhantomMask").Type},
+                    new List<int> {Bluemagic.Instance.Find<ModItem>("PhantomBag").Type, Bluemagic.Instance.Find<ModItem>("PhantomPlate").Type, Bluemagic.Instance.Find<ModItem>("PhantomBlade").Type, Bluemagic.Instance.Find<ModItem>("SpectreGun").Type, Bluemagic.Instance.Find<ModItem>("PhantomSphere").Type, Bluemagic.Instance.Find<ModItem>("PaladinStaff").Type, ItemID.GreaterHealingPotion},
+                    string.Format("Use a [i:{0}] in the Dungeon (Plantera must be defeated)", Find<ModItem>("PaladinEmblem").Type));
                 bossList.Call(
                     "AddBoss",
                     12.8f,
-                    new List<int> {Bluemagic.Instance.NPCType("Abomination"), Bluemagic.Instance.NPCType("CaptiveElement"), Bluemagic.Instance.NPCType("CaptiveElement2")},
+                    new List<int> {Bluemagic.Instance.Find<ModNPC>("Abomination").Type, Bluemagic.Instance.Find<ModNPC>("CaptiveElement").Type, Bluemagic.Instance.Find<ModNPC>("CaptiveElement2").Type},
                     this,
                     "The Abomination",
                     (Func<bool>)(() => BluemagicWorld.downedAbomination),
-                    Bluemagic.Instance.ItemType("FoulOrb"),
-                    new List<int> {Bluemagic.Instance.ItemType("AbominationTrophy"), Bluemagic.Instance.ItemType("AbominationMask")},
-                    new List<int> {Bluemagic.Instance.ItemType("AbominationBag"), Bluemagic.Instance.ItemType("MoltenDrill"), Bluemagic.Instance.ItemType("DimensionalChest"), Bluemagic.Instance.ItemType("MoltenBar"), Bluemagic.Instance.ItemType("SixColorShield"), ItemID.GreaterHealingPotion},
-                    string.Format("Use a [i:{0}] in the Underworld (Plantera must be defeated)", ItemType("FoulOrb")));
+                    Bluemagic.Instance.Find<ModItem>("FoulOrb").Type,
+                    new List<int> {Bluemagic.Instance.Find<ModItem>("AbominationTrophy").Type, Bluemagic.Instance.Find<ModItem>("AbominationMask").Type},
+                    new List<int> {Bluemagic.Instance.Find<ModItem>("AbominationBag").Type, Bluemagic.Instance.Find<ModItem>("MoltenDrill").Type, Bluemagic.Instance.Find<ModItem>("DimensionalChest").Type, Bluemagic.Instance.Find<ModItem>("MoltenBar").Type, Bluemagic.Instance.Find<ModItem>("SixColorShield").Type, ItemID.GreaterHealingPotion},
+                    string.Format("Use a [i:{0}] in the Underworld (Plantera must be defeated)", Find<ModItem>("FoulOrb").Type));
                 bossList.Call(
                     "AddBoss",
                     14.5f,
-                    new List<int> {Bluemagic.Instance.NPCType("Abomination"), Bluemagic.Instance.NPCType("CaptiveElement"), Bluemagic.Instance.NPCType("CaptiveElement2")},
+                    new List<int> {Bluemagic.Instance.Find<ModNPC>("Abomination").Type, Bluemagic.Instance.Find<ModNPC>("CaptiveElement").Type, Bluemagic.Instance.Find<ModNPC>("CaptiveElement2").Type},
                     this,
                     "The Abomination (Rematch)",
                     (Func<bool>)(() => BluemagicWorld.elementalUnleash),
-                    Bluemagic.Instance.ItemType("FoulOrb"),
-                    new List<int> {Bluemagic.Instance.ItemType("AbominationTrophy"), Bluemagic.Instance.ItemType("AbominationMask")},
-                    new List<int> {Bluemagic.Instance.ItemType("AbominationBag2"), Bluemagic.Instance.ItemType("MoltenDrill"), Bluemagic.Instance.ItemType("DimensionalChest"), Bluemagic.Instance.ItemType("MoltenBar"), Bluemagic.Instance.ItemType("SixColorShield"), Bluemagic.Instance.ItemType("ElementalEye"), Bluemagic.Instance.ItemType("ElementalYoyo"), Bluemagic.Instance.ItemType("ElementalSprayer"), Bluemagic.Instance.ItemType("EyeballTome"), Bluemagic.Instance.ItemType("ElementalStaff"), Bluemagic.Instance.ItemType("EyeballGlove"), ItemID.GreaterHealingPotion},
-                    string.Format("Use a [i:{0}] in the Underworld (Moon Lord must be defeated). [c/FF0000:Starts the Elemental Unleash!]", ItemType("FoulOrb")));
+                    Bluemagic.Instance.Find<ModItem>("FoulOrb").Type,
+                    new List<int> {Bluemagic.Instance.Find<ModItem>("AbominationTrophy").Type, Bluemagic.Instance.Find<ModItem>("AbominationMask").Type},
+                    new List<int> {Bluemagic.Instance.Find<ModItem>("AbominationBag2").Type, Bluemagic.Instance.Find<ModItem>("MoltenDrill").Type, Bluemagic.Instance.Find<ModItem>("DimensionalChest").Type, Bluemagic.Instance.Find<ModItem>("MoltenBar").Type, Bluemagic.Instance.Find<ModItem>("SixColorShield").Type, Bluemagic.Instance.Find<ModItem>("ElementalEye").Type, Bluemagic.Instance.Find<ModItem>("ElementalYoyo").Type, Bluemagic.Instance.Find<ModItem>("ElementalSprayer").Type, Bluemagic.Instance.Find<ModItem>("EyeballTome").Type, Bluemagic.Instance.Find<ModItem>("ElementalStaff").Type, Bluemagic.Instance.Find<ModItem>("EyeballGlove").Type, ItemID.GreaterHealingPotion},
+                    string.Format("Use a [i:{0}] in the Underworld (Moon Lord must be defeated). [c/FF0000:Starts the Elemental Unleash!]", Find<ModItem>("FoulOrb").Type));
                 bossList.Call(
                     "AddBoss",
                     16f,
-                    Bluemagic.Instance.NPCType("PuritySpirit"),
+                    Bluemagic.Instance.Find<ModNPC>("PuritySpirit").Type,
                     this,
                     "The Spirit of Purity",
                     (Func<bool>)(() => BluemagicWorld.downedPuritySpirit),
-                    Bluemagic.Instance.ItemType("ElementalPurge"),
-                    new List<int> {Bluemagic.Instance.ItemType("PuritySpiritTrophy"), Bluemagic.Instance.ItemType("BunnyTrophy"), Bluemagic.Instance.ItemType("TreeTrophy"), Bluemagic.Instance.ItemType("PuritySpiritMask"), Bluemagic.Instance.ItemType("BunnyMask")},
-                    new List<int> {Bluemagic.Instance.ItemType("InfinityCrystal"), Bluemagic.Instance.ItemType("PuritySpiritBag"), ItemID.SuperHealingPotion},
-                    string.Format("Kill a Bunny while the Bunny is standing in front of a placed [i:{0}]", ItemType("ElementalPurge")));
+                    Bluemagic.Instance.Find<ModItem>("ElementalPurge").Type,
+                    new List<int> {Bluemagic.Instance.Find<ModItem>("PuritySpiritTrophy").Type, Bluemagic.Instance.Find<ModItem>("BunnyTrophy").Type, Bluemagic.Instance.Find<ModItem>("TreeTrophy").Type, Bluemagic.Instance.Find<ModItem>("PuritySpiritMask").Type, Bluemagic.Instance.Find<ModItem>("BunnyMask").Type},
+                    new List<int> {Bluemagic.Instance.Find<ModItem>("InfinityCrystal").Type, Bluemagic.Instance.Find<ModItem>("PuritySpiritBag").Type, ItemID.SuperHealingPotion},
+                    string.Format("Kill a Bunny while the Bunny is standing in front of a placed [i:{0}]", Find<ModItem>("ElementalPurge").Type));
                 bossList.Call(
                     "AddBoss",
                     18f,
-                    new List<int> {Bluemagic.Instance.NPCType("ChaosSpirit"), Bluemagic.Instance.NPCType("ChaosSpirit2"), Bluemagic.Instance.NPCType("ChaosSpirit3")},
+                    new List<int> {Bluemagic.Instance.Find<ModNPC>("ChaosSpirit").Type, Bluemagic.Instance.Find<ModNPC>("ChaosSpirit2").Type, Bluemagic.Instance.Find<ModNPC>("ChaosSpirit3").Type},
                     this,
                     "The Spirit of Chaos",
                     (Func<bool>)(() => BluemagicWorld.downedChaosSpirit),
-                    Bluemagic.Instance.ItemType("RitualOfEndings"),
-                    new List<int> {Bluemagic.Instance.ItemType("ChaosTrophy"), Bluemagic.Instance.ItemType("CataclysmTrophy"), Bluemagic.Instance.ItemType("ChaosSpiritMask"), Bluemagic.Instance.ItemType("CataclysmMask")},
-                    new List<int> {Bluemagic.Instance.ItemType("ChaosCrystal"), Bluemagic.Instance.ItemType("CataclysmCrystal"), ItemID.SuperHealingPotion},
-                    string.Format("Use a [i:{0}] anytime, anywhere (has infinite reuses)", ItemType("RitualOfEndings")));
+                    Bluemagic.Instance.Find<ModItem>("RitualOfEndings").Type,
+                    new List<int> {Bluemagic.Instance.Find<ModItem>("ChaosTrophy").Type, Bluemagic.Instance.Find<ModItem>("CataclysmTrophy").Type, Bluemagic.Instance.Find<ModItem>("ChaosSpiritMask").Type, Bluemagic.Instance.Find<ModItem>("CataclysmMask").Type},
+                    new List<int> {Bluemagic.Instance.Find<ModItem>("ChaosCrystal").Type, Bluemagic.Instance.Find<ModItem>("CataclysmCrystal").Type, ItemID.SuperHealingPotion},
+                    string.Format("Use a [i:{0}] anytime, anywhere (has infinite reuses)", Find<ModItem>("RitualOfEndings").Type));
                 bossList.Call(
                     "AddBoss",
                     42f,
-                    new List<int> {Bluemagic.Instance.NPCType("TerraSpirit"), Bluemagic.Instance.NPCType("TerraSpirit2"), Bluemagic.Instance.NPCType("TerraProbe2"), Bluemagic.Instance.NPCType("TerraProbe3"), Bluemagic.Instance.NPCType("TerraProbe4"), Bluemagic.Instance.NPCType("TerraProbe5")},
+                    new List<int> {Bluemagic.Instance.Find<ModNPC>("TerraSpirit").Type, Bluemagic.Instance.Find<ModNPC>("TerraSpirit2").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe2").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe3").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe4").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe5").Type},
                     this,
                     "????? (Phase 1)",
                     (Func<bool>)(() => BluemagicWorld.terraCheckpoint1 > 0),
-                    Bluemagic.Instance.ItemType("RitualOfBunnies"),
+                    Bluemagic.Instance.Find<ModItem>("RitualOfBunnies").Type,
                     null,
-                    Bluemagic.Instance.ItemType("Checkpoint1"),
-                    string.Format("Use a [i:{0}] anytime, anywhere, after all previous bosses have been defeated (has infinite reuses)", ItemType("RitualOfBunnies")));
+                    Bluemagic.Instance.Find<ModItem>("Checkpoint1").Type,
+                    string.Format("Use a [i:{0}] anytime, anywhere, after all previous bosses have been defeated (has infinite reuses)", Find<ModItem>("RitualOfBunnies").Type));
                 bossList.Call(
                     "AddBoss",
                     256f,
-                    new List<int> {Bluemagic.Instance.NPCType("TerraSpirit"), Bluemagic.Instance.NPCType("TerraSpirit2"), Bluemagic.Instance.NPCType("TerraProbe2"), Bluemagic.Instance.NPCType("TerraProbe3"), Bluemagic.Instance.NPCType("TerraProbe4"), Bluemagic.Instance.NPCType("TerraProbe5")},
+                    new List<int> {Bluemagic.Instance.Find<ModNPC>("TerraSpirit").Type, Bluemagic.Instance.Find<ModNPC>("TerraSpirit2").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe2").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe3").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe4").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe5").Type},
                     this,
                     "????? (Phase 2)",
                     (Func<bool>)(() => BluemagicWorld.terraCheckpoint2 > 0),
-                    Bluemagic.Instance.ItemType("Checkpoint1"),
+                    Bluemagic.Instance.Find<ModItem>("Checkpoint1").Type,
                     null,
-                    Bluemagic.Instance.ItemType("Checkpoint2"),
-                    string.Format("Defeat the previous phase or use a [i:{0}]", ItemType("Checkpoint1")));
+                    Bluemagic.Instance.Find<ModItem>("Checkpoint2").Type,
+                    string.Format("Defeat the previous phase or use a [i:{0}]", Find<ModItem>("Checkpoint1").Type));
                 bossList.Call(
                     "AddBoss",
                     666f,
-                    new List<int> {Bluemagic.Instance.NPCType("TerraSpirit"), Bluemagic.Instance.NPCType("TerraSpirit2"), Bluemagic.Instance.NPCType("TerraProbe2"), Bluemagic.Instance.NPCType("TerraProbe3"), Bluemagic.Instance.NPCType("TerraProbe4"), Bluemagic.Instance.NPCType("TerraProbe5")},
+                    new List<int> {Bluemagic.Instance.Find<ModNPC>("TerraSpirit").Type, Bluemagic.Instance.Find<ModNPC>("TerraSpirit2").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe2").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe3").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe4").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe5").Type},
                     this,
                     "????? (Phase 3)",
                     (Func<bool>)(() => BluemagicWorld.terraCheckpoint3 > 0),
-                    Bluemagic.Instance.ItemType("Checkpoint2"),
+                    Bluemagic.Instance.Find<ModItem>("Checkpoint2").Type,
                     null,
-                    Bluemagic.Instance.ItemType("Checkpoint3"),
-                    string.Format("Defeat the previous phase or use a [i:{0}]", ItemType("Checkpoint2")));
+                    Bluemagic.Instance.Find<ModItem>("Checkpoint3").Type,
+                    string.Format("Defeat the previous phase or use a [i:{0}]", Find<ModItem>("Checkpoint2").Type));
                 bossList.Call(
                     "AddBoss",
                     1337f,
-                    new List<int> {Bluemagic.Instance.NPCType("TerraSpirit"), Bluemagic.Instance.NPCType("TerraSpirit2"), Bluemagic.Instance.NPCType("TerraProbe2"), Bluemagic.Instance.NPCType("TerraProbe3"), Bluemagic.Instance.NPCType("TerraProbe4"), Bluemagic.Instance.NPCType("TerraProbe5")},
+                    new List<int> {Bluemagic.Instance.Find<ModNPC>("TerraSpirit").Type, Bluemagic.Instance.Find<ModNPC>("TerraSpirit2").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe2").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe3").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe4").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe5").Type},
                     this,
                     "????? (Phase 4)",
                     (Func<bool>)(() => BluemagicWorld.terraCheckpointS > 0),
-                    Bluemagic.Instance.ItemType("Checkpoint3"),
+                    Bluemagic.Instance.Find<ModItem>("Checkpoint3").Type,
                     null,
-                    Bluemagic.Instance.ItemType("CheckpointS"),
-                    string.Format("Defeat the previous phase or use a [i:{0}]", ItemType("Checkpoint3")));
+                    Bluemagic.Instance.Find<ModItem>("CheckpointS").Type,
+                    string.Format("Defeat the previous phase or use a [i:{0}]", Find<ModItem>("Checkpoint3").Type));
                 bossList.Call(
                     "AddBoss",
                     9001f,
-                    new List<int> {Bluemagic.Instance.NPCType("TerraSpirit"), Bluemagic.Instance.NPCType("TerraSpirit2"), Bluemagic.Instance.NPCType("TerraProbe2"), Bluemagic.Instance.NPCType("TerraProbe3"), Bluemagic.Instance.NPCType("TerraProbe4"), Bluemagic.Instance.NPCType("TerraProbe5")},
+                    new List<int> {Bluemagic.Instance.Find<ModNPC>("TerraSpirit").Type, Bluemagic.Instance.Find<ModNPC>("TerraSpirit2").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe2").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe3").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe4").Type, Bluemagic.Instance.Find<ModNPC>("TerraProbe5").Type},
                     this,
                     "?????",
                     (Func<bool>)(() => BluemagicWorld.downedTerraSpirit),
-                    Bluemagic.Instance.ItemType("CheckpointS"),
-                    Bluemagic.Instance.ItemType("BlushieCharm"),
-                    new List<int> {Bluemagic.Instance.ItemType("PuriumCoin"), Bluemagic.Instance.ItemType("RainbowStar")},
+                    Bluemagic.Instance.Find<ModItem>("CheckpointS").Type,
+                    Bluemagic.Instance.Find<ModItem>("BlushieCharm").Type,
+                    new List<int> {Bluemagic.Instance.Find<ModItem>("PuriumCoin").Type, Bluemagic.Instance.Find<ModItem>("RainbowStar").Type},
                     "Overcome all phases and defeat the boss once and for all!");
                 bossList.Call(
                     "AddBoss",
                     9002f,
-                    new List<int> {Bluemagic.Instance.NPCType("Blushiemagic"), Bluemagic.Instance.NPCType("BlushiemagicK"), Bluemagic.Instance.NPCType("BlushiemagicA"), Bluemagic.Instance.NPCType("BlushiemagicL"), Bluemagic.Instance.NPCType("BlushiemagicM"), Bluemagic.Instance.NPCType("BlushiemagicJ")},
+                    new List<int> {Bluemagic.Instance.Find<ModNPC>("Blushiemagic").Type, Bluemagic.Instance.Find<ModNPC>("BlushiemagicK").Type, Bluemagic.Instance.Find<ModNPC>("BlushiemagicA").Type, Bluemagic.Instance.Find<ModNPC>("BlushiemagicL").Type, Bluemagic.Instance.Find<ModNPC>("BlushiemagicM").Type, Bluemagic.Instance.Find<ModNPC>("BlushiemagicJ").Type},
                     this,
                     "Blushiemagic",
                     (Func<bool>)(() => BluemagicWorld.downedBlushie),
-                    Bluemagic.Instance.ItemType("BlushieCrystal"),
+                    Bluemagic.Instance.Find<ModItem>("BlushieCrystal").Type,
                     null,
-                    new List<int> {Bluemagic.Instance.ItemType("PuriumCoin"), Bluemagic.Instance.ItemType("SkyDragonHeart"), Bluemagic.Instance.ItemType("WorldReaver")},
-                    string.Format("Use a [i:{0}] anytime, anywhere, after all previous bosses have been defeated (has infinite reuses). Be warned, it will be very difficult.", ItemType("BlushieCrystal")),
+                    new List<int> {Bluemagic.Instance.Find<ModItem>("PuriumCoin").Type, Bluemagic.Instance.Find<ModItem>("SkyDragonHeart").Type, Bluemagic.Instance.Find<ModItem>("WorldReaver").Type},
+                    string.Format("Use a [i:{0}] anytime, anywhere, after all previous bosses have been defeated (has infinite reuses). Be warned, it will be very difficult.", Find<ModItem>("BlushieCrystal").Type),
                     null,
                     null,
                     null,
@@ -229,9 +235,9 @@ namespace Bluemagic
             HealthBars = ModLoader.GetMod("FKBossHealthBar");
             if (HealthBars != null)
             {
-                HealthBars.Call("RegisterHealthBarMini", NPCType("BlushiemagicK"));
-                HealthBars.Call("RegisterHealthBarMini", NPCType("BlushiemagicA"));
-                HealthBars.Call("RegisterHealthBarMini", NPCType("BlushiemagicL"));
+                HealthBars.Call("RegisterHealthBarMini", Find<ModNPC>("BlushiemagicK").Type);
+                HealthBars.Call("RegisterHealthBarMini", Find<ModNPC>("BlushiemagicA").Type);
+                HealthBars.Call("RegisterHealthBarMini", Find<ModNPC>("BlushiemagicL").Type);
             }
         }
 
@@ -245,7 +251,7 @@ namespace Bluemagic
             BlushieBoss.BlushieBoss.Unload();
         }
 
-        public override void AddRecipes()
+        public override void AddRecipes()/* tModPorter Note: Removed. Use ModSystem.AddRecipes */
         {
             BluemagicRecipes.AddRecipes(this);
         }
@@ -372,8 +378,8 @@ namespace Bluemagic
             MessageType type = (MessageType)reader.ReadByte();
             if (type == MessageType.PuritySpirit)
             {
-                PuritySpirit.PuritySpirit spirit = Main.npc[reader.ReadInt32()].modNPC as PuritySpirit.PuritySpirit;
-                if (spirit != null && spirit.npc.active)
+                PuritySpirit.PuritySpirit spirit = Main.npc[reader.ReadInt32()].ModNPC as PuritySpirit.PuritySpirit;
+                if (spirit != null && spirit.NPC.active)
                 {
                     spirit.HandlePacket(reader);
                 }
@@ -394,7 +400,7 @@ namespace Bluemagic
                     {
                         text = NetworkText.FromKey("Mods.Bluemagic.LivesLeft", player.name, lives);
                     }
-                    NetMessage.BroadcastChatMessage(text, new Color(255, 25, 25));
+                    ChatHelper.BroadcastChatMessage(text, new Color(255, 25, 25));
                 }
             }
             else if (type == MessageType.ChaosSpirit)
@@ -402,17 +408,17 @@ namespace Bluemagic
                 NPC npc = Main.npc[reader.ReadInt32()];
                 if (npc.active)
                 {
-                    ChaosSpirit.ChaosSpirit spirit = npc.modNPC as ChaosSpirit.ChaosSpirit;
+                    ChaosSpirit.ChaosSpirit spirit = npc.ModNPC as ChaosSpirit.ChaosSpirit;
                     if (spirit != null)
                     {
                         spirit.HandlePacket(reader);
                     }
-                    ChaosSpirit2 spirit2 = npc.modNPC as ChaosSpirit2;
+                    ChaosSpirit2 spirit2 = npc.ModNPC as ChaosSpirit2;
                     if (spirit2 != null)
                     {
                         spirit2.HandlePacket(reader);
                     }
-                    ChaosSpirit3 spirit3 = npc.modNPC as ChaosSpirit3;
+                    ChaosSpirit3 spirit3 = npc.ModNPC as ChaosSpirit3;
                     if (spirit3 != null)
                     {
                         spirit3.HandlePacket(reader);
@@ -425,7 +431,7 @@ namespace Bluemagic
                 Vector2 push = new Vector2(reader.ReadSingle(), reader.ReadSingle());
                 if (npc.active)
                 {
-                    ChaosSpiritArm arm = npc.modNPC as ChaosSpiritArm;
+                    ChaosSpiritArm arm = npc.ModNPC as ChaosSpiritArm;
                     if (arm != null)
                     {
                         arm.offset += push;
@@ -445,7 +451,7 @@ namespace Bluemagic
                 NPC npc = Main.npc[reader.ReadInt32()];
                 if (npc.active)
                 {
-                    TerraSpirit.TerraSpirit spirit = npc.modNPC as TerraSpirit.TerraSpirit;
+                    TerraSpirit.TerraSpirit spirit = npc.ModNPC as TerraSpirit.TerraSpirit;
                     if (spirit != null)
                     {
                         spirit.HandlePacket(reader);
@@ -468,14 +474,14 @@ namespace Bluemagic
                     {
                         text = NetworkText.FromKey("Mods.Bluemagic.LivesLeft", player.name, lives);
                     }
-                    NetMessage.BroadcastChatMessage(text, new Color(255, 25, 25));
+                    ChatHelper.BroadcastChatMessage(text, new Color(255, 25, 25));
                 }
             }
             else if (type == MessageType.GoldBlob)
             {
                 NPC npc = Main.npc[reader.ReadByte()];
                 float value = reader.ReadByte();
-                if (npc.active && npc.type == NPCType("GoldBlob"))
+                if (npc.active && npc.type == Find<ModNPC>("GoldBlob").Type)
                 {
                     npc.localAI[0] = value;
                 }
@@ -491,9 +497,9 @@ namespace Bluemagic
             else if (type == MessageType.BulletNegative)
             {
                 NPC npc = Main.npc[reader.ReadByte()];
-                if (npc.active && npc.type == NPCType("TerraSpirit2") && npc.modNPC is TerraSpirit2)
+                if (npc.active && npc.type == Find<ModNPC>("TerraSpirit2").Type && npc.ModNPC is TerraSpirit2)
                 {
-                    var bullets = ((TerraSpirit2)npc.modNPC).bullets;
+                    var bullets = ((TerraSpirit2)npc.ModNPC).bullets;
                     int count = reader.ReadByte();
                     for (int k = 0; k < count; k++)
                     {
@@ -524,21 +530,21 @@ namespace Bluemagic
             }
         }
 
-        public override void UpdateMusic(ref int music, ref MusicPriority priority)
+        public override void UpdateMusic(ref int music, ref SceneEffectPriority priority)/* tModPorter Note: Removed. Use ModSceneEffect.Music and .Priority, aswell as ModSceneEffect.IsSceneEffectActive */
         {
             if (!Main.gameMenu && BlushieBoss.BlushieBoss.Active && BlushieBoss.BlushieBoss.Phase >= 3)
             {
                 music = GetSoundSlot(SoundType.Music, "Sounds/Music/Fallen Blood");
-                priority = MusicPriority.BossHigh;
+                priority = SceneEffectPriority.BossHigh;
             }
         }
 
-        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)/* tModPorter Note: Removed. Use ModSystem.ModifyInterfaceLayers */
         {
             InterfaceHelper.ModifyInterfaceLayers(layers);
         }
 
-        public override void PostDrawInterface(SpriteBatch spriteBatch)
+        public override void PostDrawInterface(SpriteBatch spriteBatch)/* tModPorter Note: Removed. Use ModSystem.PostDrawInterface */
         {
             if (BlushieBoss.BlushieBoss.Active && BlushieBoss.BlushieBoss.Phase == 3 && BlushieBoss.BlushieBoss.Phase3Attack > 0 && HealthBars != null)
             {
@@ -562,7 +568,7 @@ namespace Bluemagic
             else if (Main.netMode == 2)
             {
                 NetworkText text = NetworkText.FromKey(key);
-                NetMessage.BroadcastChatMessage(text, new Color(r, g, b));
+                ChatHelper.BroadcastChatMessage(text, new Color(r, g, b));
             }
         }
 

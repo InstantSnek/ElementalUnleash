@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -14,27 +15,27 @@ namespace Bluemagic.Items.Abomination
 
         public override void SetDefaults()
         {
-            item.width = 20;
-            item.height = 20;
-            item.maxStack = 99;
-            item.rare = 10;
-            item.value = 30000;
-            item.useStyle = 1;
-            item.useTurn = true;
-            item.useAnimation = 15;
-            item.useTime = 10;
-            item.autoReuse = true;
-            item.consumable = true;
-            item.createTile = mod.TileType("MoltenBar");
-            item.holdStyle = 4;
+            Item.width = 20;
+            Item.height = 20;
+            Item.maxStack = 99;
+            Item.rare = 10;
+            Item.value = 30000;
+            Item.useStyle = 1;
+            Item.useTurn = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.autoReuse = true;
+            Item.consumable = true;
+            Item.createTile = Mod.Find<ModTile>("MoltenBar").Type;
+            Item.holdStyle = 4;
         }
 
         public override void PostUpdate()
         {
-            Lighting.AddLight((int)((item.position.X + (float)item.width*0.5f) / 16f), (int)((item.position.Y + (float)item.height*0.5f) / 16f), 0.7f, 0.4f, 0f);
+            Lighting.AddLight((int)((Item.position.X + (float)Item.width*0.5f) / 16f), (int)((Item.position.Y + (float)Item.height*0.5f) / 16f), 0.7f, 0.4f, 0f);
         }
 
-        public override void HoldStyle(Player player)
+        public override void HoldStyle(Player player, Rectangle heldItemFrame)
         {
             player.itemLocation.X = player.Center.X + 6f * player.direction;
             player.itemLocation.Y = player.Center.Y + 10f;

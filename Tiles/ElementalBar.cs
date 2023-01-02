@@ -9,7 +9,7 @@ namespace Bluemagic.Tiles
 {
     public class ElementalBar : ModTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileShine[Type] = 1100;
             Main.tileSolid[Type] = true;
@@ -26,13 +26,13 @@ namespace Bluemagic.Tiles
 
         public override ushort GetMapOption(int i, int j)
         {
-            int style = Main.tile[i, j].frameX / 18;
+            int style = Main.tile[i, j].TileFrameX / 18;
             return 0;
         }
 
         public override bool CreateDust(int i, int j, ref int type)
         {
-            int style = Main.tile[i, j].frameX / 18;
+            int style = Main.tile[i, j].TileFrameX / 18;
             if (style == 0)
             {
                 type = 128;
@@ -42,10 +42,10 @@ namespace Bluemagic.Tiles
 
         public override bool Drop(int i, int j)
         {
-            int style = Main.tile[i, j].frameX / 18;
+            int style = Main.tile[i, j].TileFrameX / 18;
             if (style == 0)
             {
-                Item.NewItem(i * 16, j * 16, 16, 16, mod.ItemType("PuriumBar"));
+                Item.NewItem(i * 16, j * 16, 16, 16, Mod.Find<ModItem>("PuriumBar").Type);
             }
             return false;
         }

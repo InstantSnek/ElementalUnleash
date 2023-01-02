@@ -10,7 +10,7 @@ namespace Bluemagic
         {
             if (context == "bossBag" && arg == ItemID.FishronBossBag)
             {
-                player.QuickSpawnItem(mod.ItemType("Bubble"), Main.rand.Next(8, 13));
+                player.QuickSpawnItem(Mod.Find<ModItem>("Bubble").Type, Main.rand.Next(8, 13));
             }
         }
     }

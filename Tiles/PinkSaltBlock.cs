@@ -8,15 +8,15 @@ namespace Bluemagic.Tiles
 {
     public class PinkSaltBlock : ModTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileSolid[Type] = true;
             Main.tileBrick[Type] = true;
             Main.tileMergeDirt[Type] = true;
             Main.tileBlockLight[Type] = true;
             Main.tileSand[Type] = true;
-            dustType = 13;
-            drop = mod.ItemType("PinkSaltBlock");
+            DustType = 13;
+            ItemDrop = Mod.Find<ModItem>("PinkSaltBlock").Type;
             AddMapEntry(new Color(255, 200, 200));
             TileID.Sets.TouchDamageSands[Type] = 15;
             TileID.Sets.Falling[Type] = true;
@@ -24,7 +24,7 @@ namespace Bluemagic.Tiles
 
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
-            return TileUtils.TileFrame_Sand(i, j, mod.ProjectileType("PinkSaltBlockBall"));
+            return TileUtils.TileFrame_Sand(i, j, Mod.Find<ModProjectile>("PinkSaltBlockBall").Type);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Bluemagic.Blushie
             Tooltip.SetDefault("Cleaves the world to erase your enemies"
                 + "\nHas a 60 second cooldown"
                 + "\n'Great for impersonating... someone?'");
-            ItemID.Sets.ItemNoGravity[item.type] = true;
+            ItemID.Sets.ItemNoGravity[Item.type] = true;
         }
 
         public override bool CanUseItem(Player player)
@@ -29,7 +29,7 @@ namespace Bluemagic.Blushie
             return player.GetModPlayer<BluemagicPlayer>().worldReaverCooldown <= 0;
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)/* tModPorter Suggestion: Return null instead of false */
         {
             player.GetModPlayer<BluemagicPlayer>().worldReaverCooldown = 3600;
             if (Main.netMode == 0)
@@ -38,7 +38,7 @@ namespace Bluemagic.Blushie
             }
             else if (Main.netMode == 2)
             {
-                ModPacket packet = mod.GetPacket();
+                ModPacket packet = Mod.GetPacket();
                 packet.Write((byte)MessageType.WorldReaver);
                 packet.Write(player.whoAmI);
                 packet.Send();
@@ -48,18 +48,18 @@ namespace Bluemagic.Blushie
 
         public override void SetDefaults()
         {
-            item.rare = 13;
-            item.UseSound = mod.GetLegacySoundSlot(SoundType.Item, "Sounds/Item/Slice");
-            item.noMelee = true;
-            item.useStyle = 1;
-            item.damage = 666;
-            item.useAnimation = 40;
-            item.useTime = 40;
-            item.width = 138;
-            item.height = 114;
-            item.knockBack = 5f;
-            item.melee = true;
-            item.value = Item.sellPrice(2, 0, 0, 0);
+            Item.rare = 13;
+            Item.UseSound = Mod.GetLegacySoundSlot(SoundType.Item, "Sounds/Item/Slice");
+            Item.noMelee = true;
+            Item.useStyle = 1;
+            Item.damage = 666;
+            Item.useAnimation = 40;
+            Item.useTime = 40;
+            Item.width = 138;
+            Item.height = 114;
+            Item.knockBack = 5f;
+            Item.DamageType = DamageClass.Melee/* tModPorter Suggestion: Consider MeleeNoSpeed for no attack speed scaling */;
+            Item.value = Item.sellPrice(2, 0, 0, 0);
         }
 
         public static void UpdateGlitchText()
@@ -89,14 +89,14 @@ namespace Bluemagic.Blushie
         {
             for (int k = 0; k < lines.Count; k++)
             {
-                if (lines[k].mod == "Terraria" && lines[k].Name == "Damage")
+                if (lines[k].Mod == "Terraria" && lines[k].Name == "Damage")
                 {
-                    lines[k].text = glitchText + Language.GetTextValue("LegacyTooltip.2");
+                    lines[k].Text = glitchText + Language.GetTextValue("LegacyTooltip.2");
                 }
             }
         }
 
-        public override void UseStyle(Player player)
+        public override void UseStyle(Player player, Rectangle heldItemFrame)
         {
             if (player.itemAnimation < player.itemAnimationMax * 0.333)
             {

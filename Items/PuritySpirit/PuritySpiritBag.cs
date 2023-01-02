@@ -15,15 +15,15 @@ namespace Bluemagic.Items.PuritySpirit
 
         public override void SetDefaults()
         {
-            item.maxStack = 999;
-            item.consumable = true;
-            item.width = 24;
-            item.height = 24;
-            item.rare = 11;
-            item.expert = true;
+            Item.maxStack = 999;
+            Item.consumable = true;
+            Item.width = 24;
+            Item.height = 24;
+            Item.rare = 11;
+            Item.expert = true;
         }
 
-        public override int BossBagNPC => mod.NPCType("PuritySpirit");
+        public override int BossBagNPC => Mod.Find<ModNPC>("PuritySpirit").Type;
 
         public override bool CanRightClick()
         {
@@ -37,32 +37,32 @@ namespace Bluemagic.Items.PuritySpirit
             int choice = Main.rand.Next(7);
             if (choice == 0)
             {
-                player.QuickSpawnItem(mod.ItemType("PuritySpiritMask"));
+                player.QuickSpawnItem(Mod.Find<ModItem>("PuritySpiritMask").Type);
             }
             else if (choice == 1)
             {
-                player.QuickSpawnItem(mod.ItemType("BunnyMask"));
+                player.QuickSpawnItem(Mod.Find<ModItem>("BunnyMask").Type);
             }
             if (choice != 1)
             {
                 player.QuickSpawnItem(ItemID.Bunny);
             }
-            player.QuickSpawnItem(mod.ItemType("InfinityCrystal"), 2);
+            player.QuickSpawnItem(Mod.Find<ModItem>("InfinityCrystal").Type, 2);
             choice = Main.rand.Next(4);
             int type = 0;
             switch (choice)
             {
             case 0:
-                type = mod.ItemType("DanceOfBlades");
+                type = Mod.Find<ModItem>("DanceOfBlades").Type;
                 break;
             case 1:
-                type = mod.ItemType("CleanserBeam");
+                type = Mod.Find<ModItem>("CleanserBeam").Type;
                 break;
             case 2:
-                type = mod.ItemType("PrismaticShocker");
+                type = Mod.Find<ModItem>("PrismaticShocker").Type;
                 break;
             case 3:
-                type = mod.ItemType("VoidEmblem");
+                type = Mod.Find<ModItem>("VoidEmblem").Type;
                 break;
             }
             player.QuickSpawnItem(type);

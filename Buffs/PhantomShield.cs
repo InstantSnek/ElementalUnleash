@@ -6,7 +6,7 @@ namespace Bluemagic.Buffs
 {
     public class PhantomShield : ModBuff
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Phantom Shield");
             Description.SetDefault("7% reduced damage taken");

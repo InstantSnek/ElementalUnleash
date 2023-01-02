@@ -8,16 +8,16 @@ namespace Bluemagic.Tiles
 {
     public class SaltBrick : ModTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileSolid[Type] = true;
             Main.tileBrick[Type] = true;
             Main.tileMergeDirt[Type] = true;
             Main.tileLighted[Type] = true;
-            soundType = 21;
-            soundStyle = 1;
-            dustType = 13;
-            drop = mod.ItemType("SaltBrick");
+            HitSound = 21;
+            soundStyle/* tModPorter Note: Removed. Integrate into HitSound */ = 1;
+            DustType = 13;
+            ItemDrop = Mod.Find<ModItem>("SaltBrick").Type;
             AddMapEntry(new Color(200, 200, 255));
         }
     }

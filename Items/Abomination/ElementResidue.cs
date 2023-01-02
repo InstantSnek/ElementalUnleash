@@ -14,11 +14,11 @@ namespace Bluemagic.Items.Abomination
 
         public override void SetDefaults()
         {
-            item.width = 20;
-            item.height = 20;
-            item.maxStack = 99;
-            item.rare = 9;
-            item.value = Item.sellPrice(0, 2, 50, 0);
+            Item.width = 20;
+            Item.height = 20;
+            Item.maxStack = 99;
+            Item.rare = 9;
+            Item.value = Item.sellPrice(0, 2, 50, 0);
         }
     }
 }

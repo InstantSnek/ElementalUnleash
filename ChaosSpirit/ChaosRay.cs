@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace Bluemagic.ChaosSpirit
@@ -14,14 +15,14 @@ namespace Bluemagic.ChaosSpirit
 
         public override void SetDefaults()
         {
-            projectile.width = 48;
-            projectile.height = 48;
-            projectile.hostile = true;
-            projectile.penetrate = -1;
-            projectile.magic = true;
-            projectile.tileCollide = false;
-            projectile.ignoreWater = true;
-            cooldownSlot = 1;
+            Projectile.width = 48;
+            Projectile.height = 48;
+            Projectile.hostile = true;
+            Projectile.penetrate = -1;
+            Projectile.DamageType = DamageClass.Magic;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            CooldownSlot = 1;
         }
 
         private bool didHit = false;
@@ -30,45 +31,45 @@ namespace Bluemagic.ChaosSpirit
         {
             get
             {
-                float t = projectile.localAI[1] / 240f;
-                return (1f - t) * projectile.ai[1] + t * projectile.localAI[0];
+                float t = Projectile.localAI[1] / 240f;
+                return (1f - t) * Projectile.ai[1] + t * Projectile.localAI[0];
             }
         }
 
         public override void SendExtraAI(BinaryWriter writer)
         {
-            writer.Write(projectile.localAI[0]);
+            writer.Write(Projectile.localAI[0]);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
-            projectile.localAI[0] = reader.ReadSingle();
+            Projectile.localAI[0] = reader.ReadSingle();
         }
 
         public override void AI()
         {
-            if (projectile.knockBack != 0f)
+            if (Projectile.knockBack != 0f)
             {
-                projectile.localAI[0] = projectile.knockBack;
-                projectile.knockBack = 0f;
+                Projectile.localAI[0] = Projectile.knockBack;
+                Projectile.knockBack = 0f;
             }
-            NPC npc = Main.npc[(int)projectile.ai[0]];
-            if (!npc.active || npc.type != mod.NPCType("ChaosSpiritArm") || projectile.localAI[0] > 2f * MathHelper.TwoPi || projectile.localAI[0] < -2f * MathHelper.TwoPi)
+            NPC npc = Main.npc[(int)Projectile.ai[0]];
+            if (!npc.active || npc.type != Mod.Find<ModNPC>("ChaosSpiritArm").Type || Projectile.localAI[0] > 2f * MathHelper.TwoPi || Projectile.localAI[0] < -2f * MathHelper.TwoPi)
             {
-                projectile.Kill();
+                Projectile.Kill();
                 return;
             }
-            projectile.Center = npc.Center;
-            projectile.localAI[1] += 1f;
-            if (projectile.localAI[1] > 240f)
+            Projectile.Center = npc.Center;
+            Projectile.localAI[1] += 1f;
+            if (Projectile.localAI[1] > 240f)
             {
-                projectile.Kill();
+                Projectile.Kill();
                 return;
             }
             NPC spirit = Main.npc[(int)npc.ai[0]];
-            if (Main.netMode != 1 && !didHit && spirit.active && spirit.modNPC is ChaosSpirit2 && Colliding(projectile.Hitbox, spirit.Hitbox).Value)
+            if (Main.netMode != 1 && !didHit && spirit.active && spirit.ModNPC is ChaosSpirit2 && Colliding(Projectile.Hitbox, spirit.Hitbox).Value)
             {
-                ((ChaosSpirit2)spirit.modNPC).Damage();
+                ((ChaosSpirit2)spirit.ModNPC).Damage();
                 didHit = true;
             }
             CreateDust();
@@ -76,7 +77,7 @@ namespace Bluemagic.ChaosSpirit
 
         private Color GetColor()
         {
-            NPC npc = Main.npc[(int)projectile.ai[0]];
+            NPC npc = Main.npc[(int)Projectile.ai[0]];
             return ChaosSpiritArm.GetColor((int)npc.ai[1]);
         }
 
@@ -84,7 +85,7 @@ namespace Bluemagic.ChaosSpirit
         {
             Color color = GetColor();
             Vector2 direction = TrueRotation.ToRotationVector2();
-            Vector2 center = projectile.Center + direction * length;
+            Vector2 center = Projectile.Center + direction * length;
             for (int k = 0; k < 4; k++)
             {
                 float angle = TrueRotation + (Main.rand.Next(2) * 2 - 1) * (float)Math.PI / 2f;
@@ -113,12 +114,12 @@ namespace Bluemagic.ChaosSpirit
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            target.AddBuff(mod.BuffType("Undead"), 300, false);
+            target.AddBuff(Mod.Find<ModBuff>("Undead").Type, 300, false);
         }
 
         public override bool? CanHitNPC(NPC target)
         {
-            if (Vector2.Distance(target.Center, projectile.Center) >= 600f)
+            if (Vector2.Distance(target.Center, Projectile.Center) >= 600f)
             {
                 return false;
             }
@@ -128,20 +129,20 @@ namespace Bluemagic.ChaosSpirit
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
             float num = 0f;
-            Vector2 end = projectile.Center + length * TrueRotation.ToRotationVector2();
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projectile.Center, end, projectile.width, ref num);
+            Vector2 end = Projectile.Center + length * TrueRotation.ToRotationVector2();
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, end, Projectile.width, ref num);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Color color = GetColor();
             float trueRotation = TrueRotation;
             Vector2 direction = trueRotation.ToRotationVector2();
-            Texture2D texture = Main.projectileTexture[projectile.type];
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
             Vector2 origin = new Vector2(texture.Width / 2, texture.Height / 2);
-            for (float k = projectile.width * 1.5f; k < length; k += projectile.width)
+            for (float k = Projectile.width * 1.5f; k < length; k += Projectile.width)
             {
-                Vector2 drawPos = projectile.Center + k * direction - Main.screenPosition;
+                Vector2 drawPos = Projectile.Center + k * direction - Main.screenPosition;
                 spriteBatch.Draw(texture, drawPos, null, color, trueRotation, origin, 1f, SpriteEffects.None, 0f);
             }
             return false;

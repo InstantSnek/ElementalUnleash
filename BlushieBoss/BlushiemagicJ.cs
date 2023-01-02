@@ -17,26 +17,26 @@ namespace Bluemagic.BlushieBoss
         public override void SetDefaults()
         {
             base.SetDefaults();
-            npc.takenDamageMultiplier = 5f;
-            this.music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Phyrnna - Return of the Snow Queen");
+            NPC.takenDamageMultiplier = 5f;
+            this.Music = Mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Phyrnna - Return of the Snow Queen");
         }
 
         public override void AI()
         {
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             if (BlushieBoss.Phase3Attack > 8 || (BlushieBoss.Phase3Attack == 8 && BlushieBoss.Timer >= 2120))
             {
                 return true;
             }
-            Texture2D texture = mod.GetTexture("BlushieBoss/Skull_Back");
-            spriteBatch.Draw(texture, npc.Bottom - Main.screenPosition, null, Color.White, 0f, new Vector2(texture.Width / 2, texture.Height), 1f, SpriteEffects.None, 0f);
+            Texture2D texture = Mod.GetTexture("BlushieBoss/Skull_Back");
+            spriteBatch.Draw(texture, NPC.Bottom - Main.screenPosition, null, Color.White, 0f, new Vector2(texture.Width / 2, texture.Height), 1f, SpriteEffects.None, 0f);
             return true;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Texture2D texture;
             Color color;
@@ -63,20 +63,20 @@ namespace Bluemagic.BlushieBoss
                     }
                 }
                 color = Color.White * glow;
-                texture = mod.GetTexture("BlushieBoss/Skull_Top");
-                Texture2D glowTexture = mod.GetTexture("BlushieBoss/Skull_Top_Glow");
-                Vector2 drawPos = npc.Bottom + new Vector2(0f, -texture.Height / 2);
+                texture = Mod.GetTexture("BlushieBoss/Skull_Top");
+                Texture2D glowTexture = Mod.GetTexture("BlushieBoss/Skull_Top_Glow");
+                Vector2 drawPos = NPC.Bottom + new Vector2(0f, -texture.Height / 2);
                 spriteBatch.Draw(texture, drawPos - Main.screenPosition, null, Color.White, 0f, new Vector2(texture.Width / 2, texture.Height / 2), 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(glowTexture, drawPos - Main.screenPosition, null, color, 0f, new Vector2(texture.Width / 2, texture.Height / 2), 1f, SpriteEffects.None, 0f);
-                texture = mod.GetTexture("BlushieBoss/Skull_Bottom");
-                glowTexture = mod.GetTexture("BlushieBoss/Skull_Bottom_Glow");
+                texture = Mod.GetTexture("BlushieBoss/Skull_Bottom");
+                glowTexture = Mod.GetTexture("BlushieBoss/Skull_Bottom_Glow");
                 drawPos.X -= texture.Width / 2;
                 drawPos.Y -= texture.Height / 2;
                 drawPos += hinge;
                 spriteBatch.Draw(texture, drawPos - Main.screenPosition, null, Color.White, angle, hinge, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(glowTexture, drawPos - Main.screenPosition, null, color, angle, hinge, 1f, SpriteEffects.None, 0f);
-                texture = mod.GetTexture("BlushieBoss/Bone");
-                glowTexture = mod.GetTexture("BlushieBoss/Bone_Glow");
+                texture = Mod.GetTexture("BlushieBoss/Bone");
+                glowTexture = Mod.GetTexture("BlushieBoss/Bone_Glow");
                 origin = new Vector2(texture.Width / 2, texture.Height / 2);
                 spriteBatch.Draw(texture, BlushieBoss.BoneLTPos - Main.screenPosition, null, Color.White, BlushieBoss.BoneLTRot, origin, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(texture, BlushieBoss.BoneLBPos - Main.screenPosition, null, Color.White, BlushieBoss.BoneLBRot, origin, 1f, SpriteEffects.None, 0f);
@@ -92,10 +92,10 @@ namespace Bluemagic.BlushieBoss
             {
                 return;
             }
-            texture = mod.GetTexture("BlushieBoss/Skull");
-            Vector2 center = npc.Bottom + new Vector2(0f, -texture.Height / 2);
+            texture = Mod.GetTexture("BlushieBoss/Skull");
+            Vector2 center = NPC.Bottom + new Vector2(0f, -texture.Height / 2);
             spriteBatch.Draw(texture, center - Main.screenPosition, null, Color.White, 0f, new Vector2(texture.Width / 2, texture.Height / 2), 1f, SpriteEffects.None, 0f);
-            texture = mod.GetTexture("BlushieBoss/Bone");
+            texture = Mod.GetTexture("BlushieBoss/Bone");
             origin = new Vector2(texture.Width / 2, texture.Height / 2);
             float alpha = 1f;
             if (BlushieBoss.Timer < 960)

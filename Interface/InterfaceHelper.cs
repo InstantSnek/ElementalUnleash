@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -77,7 +78,7 @@ namespace Bluemagic.Interface
             const int padding = 4;
             const int chargeSize = barSize - 2 * padding;
             const int chargeHeight = 20;
-            DynamicSpriteFont font = Main.fontMouseText;
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
             float puriumShieldCharge = Math.Min(modPlayer.puriumShieldCharge, modPlayer.puriumShieldChargeMax);
             string chargeText = (int)puriumShieldCharge + "/" + (int)modPlayer.puriumShieldChargeMax;
             string maxText = "Purity Shield Charge: " + (int)modPlayer.puriumShieldChargeMax + "/" + (int)modPlayer.puriumShieldChargeMax;
@@ -140,7 +141,7 @@ namespace Bluemagic.Interface
             Rectangle rect = new Rectangle(screenAnchorX, 32, (int)(barSize * Main.UIScale), (int)(barHeight * Main.UIScale));
             if (Main.mouseX > rect.Left && Main.mouseX < rect.Right && Main.mouseY > rect.Top && Main.mouseY < rect.Bottom)
             {
-                Main.player[Main.myPlayer].showItemIcon = false;
+                Main.player[Main.myPlayer].cursorItemIconEnabled = false;
                 float enduranceCap = (int)(20 * modPlayer.puriumShieldEnduranceMult);
                 string text = "Damaging enemies powers a purity shield around you";
                 text += "\nShield also regenerates over time";

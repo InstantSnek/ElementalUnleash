@@ -3,6 +3,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -42,11 +43,11 @@ namespace Bluemagic.Abomination
         {
             get
             {
-                return npc.ai[0];
+                return NPC.ai[0];
             }
             set
             {
-                npc.ai[0] = value;
+                NPC.ai[0] = value;
             }
         }
 
@@ -54,11 +55,11 @@ namespace Bluemagic.Abomination
         {
             get
             {
-                return npc.ai[1];
+                return NPC.ai[1];
             }
             set
             {
-                npc.ai[1] = value;
+                NPC.ai[1] = value;
             }
         }
 
@@ -66,11 +67,11 @@ namespace Bluemagic.Abomination
         {
             get
             {
-                return npc.ai[2];
+                return NPC.ai[2];
             }
             set
             {
-                npc.ai[2] = value;
+                NPC.ai[2] = value;
             }
         }
 
@@ -78,11 +79,11 @@ namespace Bluemagic.Abomination
         {
             get
             {
-                return npc.ai[3];
+                return NPC.ai[3];
             }
             set
             {
-                npc.ai[3] = value;
+                NPC.ai[3] = value;
             }
         }
 
@@ -96,40 +97,40 @@ namespace Bluemagic.Abomination
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("The Abomination");
-            Main.npcFrameCount[npc.type] = 2;
+            Main.npcFrameCount[NPC.type] = 2;
         }
 
         public override void SetDefaults()
         {
-            npc.aiStyle = -1;
-            npc.lifeMax = 40000;
-            npc.damage = 100;
-            npc.defense = 55;
+            NPC.aiStyle = -1;
+            NPC.lifeMax = 40000;
+            NPC.damage = 100;
+            NPC.defense = 55;
             if (NPC.downedMoonlord)
             {
-                npc.lifeMax = 80000;
-                npc.damage = 120;
-                npc.defense = 80;
+                NPC.lifeMax = 80000;
+                NPC.damage = 120;
+                NPC.defense = 80;
             }
-            npc.knockBackResist = 0f;
-            npc.width = 100;
-            npc.height = 100;
-            npc.value = Item.buyPrice(0, 20, 0, 0);
-            npc.npcSlots = 15f;
-            npc.boss = true;
-            npc.lavaImmune = true;
-            npc.noGravity = true;
-            npc.noTileCollide = true;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
-            npc.buffImmune[24] = true;
-            music = MusicID.Boss2;
+            NPC.knockBackResist = 0f;
+            NPC.width = 100;
+            NPC.height = 100;
+            NPC.value = Item.buyPrice(0, 20, 0, 0);
+            NPC.npcSlots = 15f;
+            NPC.boss = true;
+            NPC.lavaImmune = true;
+            NPC.noGravity = true;
+            NPC.noTileCollide = true;
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath1;
+            NPC.buffImmune[24] = true;
+            Music = MusicID.Boss2;
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
         {
-            npc.lifeMax = (int)(npc.lifeMax * 0.75f * bossLifeScale);
-            npc.damage = (int)(npc.damage * 0.75f);
+            NPC.lifeMax = (int)(NPC.lifeMax * 0.75f * bossLifeScale);
+            NPC.damage = (int)(NPC.damage * 0.75f);
         }
 
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
@@ -140,31 +141,31 @@ namespace Bluemagic.Abomination
 
         public override void AI()
         {
-            if (Main.netMode != 1 && npc.localAI[0] == 0f)
+            if (Main.netMode != 1 && NPC.localAI[0] == 0f)
             {
                 for (int k = 0; k < 5; k++)
                 {
-                    int captive = NPC.NewNPC((int)npc.position.X, (int)npc.position.Y, mod.NPCType("CaptiveElement"));
-                    Main.npc[captive].ai[0] = npc.whoAmI;
+                    int captive = NPC.NewNPC((int)NPC.position.X, (int)NPC.position.Y, Mod.Find<ModNPC>("CaptiveElement").Type);
+                    Main.npc[captive].ai[0] = NPC.whoAmI;
                     Main.npc[captive].ai[1] = k;
                     Main.npc[captive].ai[2] = 50 * (k + 1);
                     CaptiveElement.SetPosition(Main.npc[captive]);
                     Main.npc[captive].netUpdate = true;
                 }
-                npc.netUpdate = true;
-                npc.localAI[0] = 1f;
+                NPC.netUpdate = true;
+                NPC.localAI[0] = 1f;
             }
-            Player player = Main.player[npc.target];
+            Player player = Main.player[NPC.target];
             if (!player.active || player.dead || player.position.Y < hellLayer * 16)
             {
-                npc.TargetClosest(false);
-                player = Main.player[npc.target];
+                NPC.TargetClosest(false);
+                player = Main.player[NPC.target];
                 if (!player.active || player.dead || player.position.Y < hellLayer * 16)
                 {
-                    npc.velocity = new Vector2(0f, 10f);
-                    if (npc.timeLeft > 10)
+                    NPC.velocity = new Vector2(0f, 10f);
+                    if (NPC.timeLeft > 10)
                     {
-                        npc.timeLeft = 10;
+                        NPC.timeLeft = 10;
                     }
                     return;
                 }
@@ -172,13 +173,13 @@ namespace Bluemagic.Abomination
             moveCool -= 1f;
             if (Main.netMode != 1 && moveCool <= 0f)
             {
-                npc.TargetClosest(false);
-                player = Main.player[npc.target];
+                NPC.TargetClosest(false);
+                player = Main.player[NPC.target];
                 double angle = Main.rand.NextDouble() * 2.0 * Math.PI;
                 int distance = sphereRadius + Main.rand.Next(200);
                 Vector2 moveTo = player.Center + (float)distance * new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
                 moveCool = (float)moveTime + (float)Main.rand.Next(100);
-                npc.velocity = (moveTo - npc.Center) / moveCool;
+                NPC.velocity = (moveTo - NPC.Center) / moveCool;
                 rotationSpeed = (float)(Main.rand.NextDouble() + Main.rand.NextDouble());
                 if (rotationSpeed > 1f)
                 {
@@ -189,9 +190,9 @@ namespace Bluemagic.Abomination
                     rotationSpeed *= -1;
                 }
                 rotationSpeed *= 0.01f;
-                npc.netUpdate = true;
+                NPC.netUpdate = true;
             }
-            if (Vector2.Distance(Main.player[npc.target].position, npc.position) > sphereRadius)
+            if (Vector2.Distance(Main.player[NPC.target].position, NPC.position) > sphereRadius)
             {
                 moveTimer--;
             }
@@ -212,13 +213,13 @@ namespace Bluemagic.Abomination
                     moveTime = 99;
                     moveTimer = 0;
                 }
-                npc.netUpdate = true;
+                NPC.netUpdate = true;
             }
             else if (moveTimer > 60)
             {
                 moveTimer -= 60;
                 moveTime += 3;
-                npc.netUpdate = true;
+                NPC.netUpdate = true;
             }
             captiveRotation += rotationSpeed;
             if (captiveRotation < 0f)
@@ -236,9 +237,9 @@ namespace Bluemagic.Abomination
             }
             if (Main.netMode != 1 && attackCool <= 0)
             {
-                attackCool = 200f + 200f * (float)npc.life / (float)npc.lifeMax + (float)Main.rand.Next(200);
+                attackCool = 200f + 200f * (float)NPC.life / (float)NPC.lifeMax + (float)Main.rand.Next(200);
                 Shoot(player);
-                npc.netUpdate = true;
+                NPC.netUpdate = true;
             }
             if (difficulty > 0)
             {
@@ -248,13 +249,13 @@ namespace Bluemagic.Abomination
             {
                 float radius = (float)Math.Sqrt(Main.rand.Next(sphereRadius * sphereRadius));
                 double angle = Main.rand.NextDouble() * 2.0 * Math.PI;
-                Dust.NewDust(new Vector2(npc.Center.X + radius * (float)Math.Cos(angle), npc.Center.Y + radius * (float)Math.Sin(angle)), 0, 0, mod.DustType("Sparkle"), 0f, 0f, 0, default(Color), 1.5f);
+                Dust.NewDust(new Vector2(NPC.Center.X + radius * (float)Math.Cos(angle), NPC.Center.Y + radius * (float)Math.Sin(angle)), 0, 0, Mod.Find<ModDust>("Sparkle").Type, 0f, 0f, 0, default(Color), 1.5f);
             }
         }
 
         private void Shoot(Player player)
         {
-            Vector2 delta = player.Center - npc.Center;
+            Vector2 delta = player.Center - NPC.Center;
             float magnitude = (float)Math.Sqrt(delta.X * delta.X + delta.Y * delta.Y);
             if (magnitude > 0)
             {
@@ -264,12 +265,12 @@ namespace Bluemagic.Abomination
             {
                 delta = new Vector2(0f, 5f);
             }
-            int damage = (npc.damage - 30) / 2;
+            int damage = (NPC.damage - 30) / 2;
             if (Main.expertMode)
             {
-                damage = (int)(damage / Main.expertDamage);
+                damage = (int)(damage / Main.GameModeInfo.EnemyDamageMultiplier);
             }
-            Projectile.NewProjectile(npc.Center.X, npc.Center.Y, delta.X, delta.Y, mod.ProjectileType("ElementBall"), damage, 3f, Main.myPlayer, BuffID.OnFire, 600f);
+            Projectile.NewProjectile(NPC.Center.X, NPC.Center.Y, delta.X, delta.Y, Mod.Find<ModProjectile>("ElementBall").Type, damage, 3f, Main.myPlayer, BuffID.OnFire, 600f);
         }
 
         private void ExpertLaser()
@@ -277,19 +278,19 @@ namespace Bluemagic.Abomination
             laserTimer--;
             if (laserTimer <= 0 && Main.netMode != 1)
             {
-                if (npc.localAI[0] == 2f)
+                if (NPC.localAI[0] == 2f)
                 {
                     int laser1Index;
                     int laser2Index;
                     if (laser1 < 0)
                     {
-                        laser1Index = npc.whoAmI;
+                        laser1Index = NPC.whoAmI;
                     }
                     else
                     {
                         for (laser1Index = 0; laser1Index < 200; laser1Index++)
                         {
-                            if (Main.npc[laser1Index].type == mod.NPCType("CaptiveElement") && laser1 == Main.npc[laser1Index].ai[1])
+                            if (Main.npc[laser1Index].type == Mod.Find<ModNPC>("CaptiveElement").Type && laser1 == Main.npc[laser1Index].ai[1])
                             {
                                 break;
                             }
@@ -297,13 +298,13 @@ namespace Bluemagic.Abomination
                     }
                     if (laser2 < 0)
                     {
-                        laser2Index = npc.whoAmI;
+                        laser2Index = NPC.whoAmI;
                     }
                     else
                     {
                         for (laser2Index = 0; laser2Index < 200; laser2Index++)
                         {
-                            if (Main.npc[laser2Index].type == mod.NPCType("CaptiveElement") && laser2 == Main.npc[laser2Index].ai[1])
+                            if (Main.npc[laser2Index].type == Mod.Find<ModNPC>("CaptiveElement").Type && laser2 == Main.npc[laser2Index].ai[1])
                             {
                                 break;
                             }
@@ -313,16 +314,16 @@ namespace Bluemagic.Abomination
                     int damage = Main.npc[laser1Index].damage / 2;
                     if (Main.expertMode)
                     {
-                        damage = (int)(damage / Main.expertDamage);
+                        damage = (int)(damage / Main.GameModeInfo.EnemyDamageMultiplier);
                     }
-                    Projectile.NewProjectile(pos.X, pos.Y, 0f, 0f, mod.ProjectileType("ElementLaser"), damage, 0f, Main.myPlayer, laser1Index, laser2Index);
+                    Projectile.NewProjectile(pos.X, pos.Y, 0f, 0f, Mod.Find<ModProjectile>("ElementLaser").Type, damage, 0f, Main.myPlayer, laser1Index, laser2Index);
                 }
                 else
                 {
-                    npc.localAI[0] = 2f;
+                    NPC.localAI[0] = 2f;
                 }
                 laserTimer = 500 + Main.rand.Next(100);
-                laserTimer = 60 + laserTimer * npc.life / npc.lifeMax;
+                laserTimer = 60 + laserTimer * NPC.life / NPC.lifeMax;
                 laser1 = Main.rand.Next(6) - 1;
                 laser2 = Main.rand.Next(5) - 1;
                 if (laser2 >= laser1)
@@ -360,32 +361,32 @@ namespace Bluemagic.Abomination
         {
             if (attackCool < 50f)
             {
-                npc.frame.Y = frameHeight;
+                NPC.frame.Y = frameHeight;
             }
             else if (difficulty > 1 && attackCool < 110f)
             {
-                npc.frame.Y = frameHeight;
+                NPC.frame.Y = frameHeight;
             }
             else
             {
-                npc.frame.Y = 0;
+                NPC.frame.Y = 0;
             }
         }
 
         public override void HitEffect(int hitDirection, double damage)
         {
-            for (int k = 0; k < damage / npc.lifeMax * 100.0; k++)
+            for (int k = 0; k < damage / NPC.lifeMax * 100.0; k++)
             {
-                Dust.NewDust(npc.position, npc.width, npc.height, 5, hitDirection, -1f, 0, default(Color), 1f);
+                Dust.NewDust(NPC.position, NPC.width, NPC.height, 5, hitDirection, -1f, 0, default(Color), 1f);
             }
-            if (Main.netMode != 1 && npc.life <= 0)
+            if (Main.netMode != 1 && NPC.life <= 0)
             {
-                Vector2 spawnAt = npc.Center + new Vector2(0f, (float)npc.height / 2f);
-                NPC.NewNPC((int)spawnAt.X, (int)spawnAt.Y, mod.NPCType("AbominationRun"));
+                Vector2 spawnAt = NPC.Center + new Vector2(0f, (float)NPC.height / 2f);
+                NPC.NewNPC((int)spawnAt.X, (int)spawnAt.Y, Mod.Find<ModNPC>("AbominationRun").Type);
             }
         }
 
-        public override bool PreNPCLoot()
+        public override bool PreKill()
         {
             return false;
         }
@@ -400,13 +401,13 @@ namespace Bluemagic.Abomination
 
         public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
         {
-            dontDamage = (player.Center - npc.Center).Length() > sphereRadius;
+            dontDamage = (player.Center - NPC.Center).Length() > sphereRadius;
         }
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             Player player = Main.player[projectile.owner];
-            dontDamage = player.active && (player.Center - npc.Center).Length() > sphereRadius;
+            dontDamage = player.active && (player.Center - NPC.Center).Length() > sphereRadius;
         }
 
         public override bool StrikeNPC(ref double damage, int defense, ref float knockback, int hitDirection, ref bool crit)
@@ -416,16 +417,16 @@ namespace Bluemagic.Abomination
                 damage = 0;
                 crit = true;
                 dontDamage = false;
-                Main.PlaySound(npc.HitSound, npc.position);
+                SoundEngine.PlaySound(NPC.HitSound, NPC.position);
                 return false;
             }
             return true;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            spriteBatch.Draw(mod.GetTexture("Abomination/HolySphere"), npc.Center - Main.screenPosition, null, Color.White * (70f / 255f), 0f, new Vector2(sphereRadius, sphereRadius), 1f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(mod.GetTexture("Abomination/HolySphereBorder"), npc.Center - Main.screenPosition, null, Color.White * 0.5f, 0f, new Vector2(sphereRadius, sphereRadius), 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Mod.GetTexture("Abomination/HolySphere"), NPC.Center - Main.screenPosition, null, Color.White * (70f / 255f), 0f, new Vector2(sphereRadius, sphereRadius), 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Mod.GetTexture("Abomination/HolySphereBorder"), NPC.Center - Main.screenPosition, null, Color.White * 0.5f, 0f, new Vector2(sphereRadius, sphereRadius), 1f, SpriteEffects.None, 0f);
             if (difficulty > 0 && laserTimer <= 60 && (laser1 == -1 || laser2 == -1))
             {
                 float rotation = laserTimer / 30f;
@@ -433,7 +434,7 @@ namespace Bluemagic.Abomination
                 {
                     rotation *= -1f;
                 }
-                spriteBatch.Draw(mod.GetTexture("Abomination/Rune"), npc.Center - Main.screenPosition, null, new Color(255, 10, 0), rotation, new Vector2(64, 64), 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Mod.GetTexture("Abomination/Rune"), NPC.Center - Main.screenPosition, null, new Color(255, 10, 0), rotation, new Vector2(64, 64), 1f, SpriteEffects.None, 0f);
             }
             return true;
         }

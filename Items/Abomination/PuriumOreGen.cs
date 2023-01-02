@@ -15,18 +15,18 @@ namespace Bluemagic.Items.Abomination
 
         public override void SetDefaults()
         {
-            item.width = 20;
-            item.height = 30;
-            item.maxStack = 20;
-            item.rare = 10;
-            item.useStyle = 4;
-            item.useAnimation = 45;
-            item.useTime = 45;
-            item.UseSound = SoundID.Item4;
-            item.consumable = true;
+            Item.width = 20;
+            Item.height = 30;
+            Item.maxStack = 20;
+            Item.rare = 10;
+            Item.useStyle = 4;
+            Item.useAnimation = 45;
+            Item.useTime = 45;
+            Item.UseSound = SoundID.Item4;
+            Item.consumable = true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)/* tModPorter Suggestion: Return null instead of false */
         {
             if (Main.netMode != 1)
             {

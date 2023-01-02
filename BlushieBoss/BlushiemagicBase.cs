@@ -12,29 +12,29 @@ namespace Bluemagic.BlushieBoss
 
         public override void SetStaticDefaults()
         {
-            NPCID.Sets.NeedsExpertScaling[npc.type] = false;
+            NPCID.Sets.NeedsExpertScaling[NPC.type] = false;
         }
 
         public override void SetDefaults()
         {
-            npc.aiStyle = -1;
-            npc.lifeMax = 1000000;
-            npc.damage = 0;
-            npc.defense = 0;
-            npc.knockBackResist = 0f;
-            npc.dontTakeDamage = true;
-            npc.width = 24;
-            npc.height = 48;
-            npc.npcSlots = 9001f;
-            npc.boss = true;
-            npc.lavaImmune = true;
-            npc.noGravity = true;
-            npc.noTileCollide = true;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = null;
-            for (int k = 0; k < npc.buffImmune.Length; k++)
+            NPC.aiStyle = -1;
+            NPC.lifeMax = 1000000;
+            NPC.damage = 0;
+            NPC.defense = 0;
+            NPC.knockBackResist = 0f;
+            NPC.dontTakeDamage = true;
+            NPC.width = 24;
+            NPC.height = 48;
+            NPC.npcSlots = 9001f;
+            NPC.boss = true;
+            NPC.lavaImmune = true;
+            NPC.noGravity = true;
+            NPC.noTileCollide = true;
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = null;
+            for (int k = 0; k < NPC.buffImmune.Length; k++)
             {
-                npc.buffImmune[k] = true;
+                NPC.buffImmune[k] = true;
             }
         }
 

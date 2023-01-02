@@ -17,12 +17,12 @@ namespace Bluemagic.Items.PurityCraft
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 24;
-            item.accessory = true;
-            item.lifeRegen = 10;
-            item.rare = 11;
-            item.value = Item.sellPrice(0, 25, 0, 0);
+            Item.width = 16;
+            Item.height = 24;
+            Item.accessory = true;
+            Item.lifeRegen = 10;
+            Item.rare = 11;
+            Item.value = Item.sellPrice(0, 25, 0, 0);
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual)
@@ -34,12 +34,11 @@ namespace Bluemagic.Items.PurityCraft
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.CharmofMyths);
             recipe.AddIngredient(null, "InfinityCrystal", 2);
             recipe.AddTile(null, "PuriumAnvil");
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -15,25 +16,25 @@ namespace Bluemagic.Items.Abomination
 
         public override void SetDefaults()
         {
-            item.autoReuse = true;
-            item.rare = 10;
-            item.UseSound = SoundID.Item1;
-            item.noMelee = true;
-            item.useStyle = 1;
-            item.noUseGraphic = true;
-            item.damage = 289;
-            item.useAnimation = 20;
-            item.useTime = 20;
-            item.width = 26;
-            item.height = 26;
-            item.shoot = mod.ProjectileType("EyeballGlove");
-            item.shootSpeed = 8f;
-            item.knockBack = 6.5f;
-            item.thrown = true;
-            item.value = Item.sellPrice(0, 15, 0, 0);
+            Item.autoReuse = true;
+            Item.rare = 10;
+            Item.UseSound = SoundID.Item1;
+            Item.noMelee = true;
+            Item.useStyle = 1;
+            Item.noUseGraphic = true;
+            Item.damage = 289;
+            Item.useAnimation = 20;
+            Item.useTime = 20;
+            Item.width = 26;
+            Item.height = 26;
+            Item.shoot = Mod.Find<ModProjectile>("EyeballGlove").Type;
+            Item.shootSpeed = 8f;
+            Item.knockBack = 6.5f;
+            Item.DamageType = DamageClass.Throwing;
+            Item.value = Item.sellPrice(0, 15, 0, 0);
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             Projectile.NewProjectile(position.X, position.Y, speedX, speedY, type, damage, knockBack, Main.myPlayer, Main.rand.Next(6));
             return false;
@@ -43,35 +44,31 @@ namespace Bluemagic.Items.Abomination
         {
             if (Bluemagic.Sushi != null)
             {
-                ModRecipe recipe;
+                Recipe recipe;
 
-                recipe = new ModRecipe(mod);
+                recipe = CreateRecipe();
                 recipe.AddIngredient(null, "ElementalYoyo");
-                recipe.AddIngredient(Bluemagic.Sushi.ItemType("SwapToken"));
+                recipe.AddIngredient(Bluemagic.Sushi.Find<ModItem>("SwapToken").Type);
                 recipe.AddTile(TileID.TinkerersWorkbench);
-                recipe.SetResult(this);
-                recipe.AddRecipe();
+                recipe.Register();
 
-                recipe = new ModRecipe(mod);
+                recipe = CreateRecipe();
                 recipe.AddIngredient(null, "ElementalSprayer");
-                recipe.AddIngredient(Bluemagic.Sushi.ItemType("SwapToken"));
+                recipe.AddIngredient(Bluemagic.Sushi.Find<ModItem>("SwapToken").Type);
                 recipe.AddTile(TileID.TinkerersWorkbench);
-                recipe.SetResult(this);
-                recipe.AddRecipe();
+                recipe.Register();
 
-                recipe = new ModRecipe(mod);
+                recipe = CreateRecipe();
                 recipe.AddIngredient(null, "EyeballTome");
-                recipe.AddIngredient(Bluemagic.Sushi.ItemType("SwapToken"));
+                recipe.AddIngredient(Bluemagic.Sushi.Find<ModItem>("SwapToken").Type);
                 recipe.AddTile(TileID.TinkerersWorkbench);
-                recipe.SetResult(this);
-                recipe.AddRecipe();
+                recipe.Register();
 
-                recipe = new ModRecipe(mod);
+                recipe = CreateRecipe();
                 recipe.AddIngredient(null, "ElementalStaff");
-                recipe.AddIngredient(Bluemagic.Sushi.ItemType("SwapToken"));
+                recipe.AddIngredient(Bluemagic.Sushi.Find<ModItem>("SwapToken").Type);
                 recipe.AddTile(TileID.TinkerersWorkbench);
-                recipe.SetResult(this);
-                recipe.AddRecipe();
+                recipe.Register();
             }
         }
     }

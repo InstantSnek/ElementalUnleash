@@ -11,43 +11,43 @@ namespace Bluemagic.Items.Abomination.Projectiles
     {
         public override void SetStaticDefaults()
         {
-            Main.projFrames[projectile.type] = 6;
+            Main.projFrames[Projectile.type] = 6;
         }
 
         public override void SetDefaults()
         {
-            projectile.width = 28;
-            projectile.height = 28;
-            projectile.friendly = true;
-            projectile.ignoreWater = true;
-            projectile.thrown = true;
-            projectile.MaxUpdates = 2;
-            projectile.timeLeft = 300;
-            projectile.penetrate = 5;
+            Projectile.width = 28;
+            Projectile.height = 28;
+            Projectile.friendly = true;
+            Projectile.ignoreWater = true;
+            Projectile.DamageType = DamageClass.Throwing;
+            Projectile.MaxUpdates = 2;
+            Projectile.timeLeft = 300;
+            Projectile.penetrate = 5;
         }
 
         public override void AI()
         {
-            projectile.frame = (int)projectile.ai[0];
-            projectile.velocity.Y += projectile.velocity.Y < 0f ? 0.1f : 0.2f;
+            Projectile.frame = (int)Projectile.ai[0];
+            Projectile.velocity.Y += Projectile.velocity.Y < 0f ? 0.1f : 0.2f;
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            if (projectile.velocity.X != oldVelocity.X)
+            if (Projectile.velocity.X != oldVelocity.X)
             {
-                projectile.velocity.X = -oldVelocity.X;
+                Projectile.velocity.X = -oldVelocity.X;
             }
-            if (projectile.velocity.Y != oldVelocity.Y)
+            if (Projectile.velocity.Y != oldVelocity.Y)
             {
-                projectile.velocity.Y = -oldVelocity.Y * 0.9f;
+                Projectile.velocity.Y = -oldVelocity.Y * 0.9f;
             }
             return false;
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if (projectile.ai[0] == 3f)
+            if (Projectile.ai[0] == 3f)
             {
                 damage += 20;
             }
@@ -55,7 +55,7 @@ namespace Bluemagic.Items.Abomination.Projectiles
 
         public override void ModifyHitPvp(Player target, ref int damage, ref bool crit)
         {
-            if (projectile.ai[0] == 3f)
+            if (Projectile.ai[0] == 3f)
             {
                 damage += 20;
             }
@@ -81,14 +81,14 @@ namespace Bluemagic.Items.Abomination.Projectiles
 
         public int GetDebuff()
         {
-            switch ((int)projectile.ai[0])
+            switch ((int)Projectile.ai[0])
             {
             case 0:
                 return BuffID.OnFire;
             case 1:
                 return BuffID.Frostburn;
             case 2:
-                return mod.BuffType("EtherealFlames");
+                return Mod.Find<ModBuff>("EtherealFlames").Type;
             case 3:
                 return 0;
             case 4:
@@ -102,7 +102,7 @@ namespace Bluemagic.Items.Abomination.Projectiles
 
         public int GetDebuffTime()
         {
-            switch ((int)projectile.ai[0])
+            switch ((int)Projectile.ai[0])
             {
             case 0:
                 return 600;

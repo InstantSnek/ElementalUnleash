@@ -15,30 +15,30 @@ namespace Bluemagic.Items.TerraSpirit
             Tooltip.SetDefault("Enrages the Spirit of Purity at 60% health"
                 + "\nCan be reused infinitely"
                 + "\nEach player starts with {0} lives");
-            ItemID.Sets.ItemNoGravity[item.type] = true;
+            ItemID.Sets.ItemNoGravity[Item.type] = true;
         }
 
         public override void SetDefaults()
         {
-            item.width = 20;
-            item.height = 20;
-            item.rare = 12;
-            item.useAnimation = 45;
-            item.useTime = 45;
-            item.useStyle = 4;
-            item.UseSound = SoundID.Item44;
+            Item.width = 20;
+            Item.height = 20;
+            Item.rare = 12;
+            Item.useAnimation = 45;
+            Item.useTime = 45;
+            Item.useStyle = 4;
+            Item.UseSound = SoundID.Item44;
         }
 
         public override bool CanUseItem(Player player)
         {
-            return BluemagicWorld.terraCheckpoint2 > 0 && !NPC.AnyNPCs(mod.NPCType("TerraSpirit")) && !NPC.AnyNPCs(mod.NPCType("TerraSpirit2"));
+            return BluemagicWorld.terraCheckpoint2 > 0 && !NPC.AnyNPCs(Mod.Find<ModNPC>("TerraSpirit").Type) && !NPC.AnyNPCs(Mod.Find<ModNPC>("TerraSpirit2").Type);
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)/* tModPorter Suggestion: Return null instead of false */
         {
             if (Main.netMode != 1)
             {
-                NPC.NewNPC((int)player.Center.X, (int)player.Center.Y, mod.NPCType("TerraSpirit"), 0, 6f);
+                NPC.NewNPC((int)player.Center.X, (int)player.Center.Y, Mod.Find<ModNPC>("TerraSpirit").Type, 0, 6f);
             }
             return true;
         }
@@ -47,9 +47,9 @@ namespace Bluemagic.Items.TerraSpirit
         {
             for (int k = 0; k < lines.Count; k++)
             {
-                if (lines[k].mod == "Terraria" && lines[k].Name == "Tooltip2")
+                if (lines[k].Mod == "Terraria" && lines[k].Name == "Tooltip2")
                 {
-                    lines[k].text = string.Format(lines[k].text, BluemagicWorld.terraCheckpoint2);
+                    lines[k].Text = string.Format(lines[k].Text, BluemagicWorld.terraCheckpoint2);
                 }
             }
         }

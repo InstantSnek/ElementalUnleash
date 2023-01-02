@@ -14,27 +14,26 @@ namespace Bluemagic.Items.Purium
 
         public override void SetDefaults()
         {
-            item.width = 28;
-            item.height = 14;
-            item.maxStack = 99;
-            item.useTurn = true;
-            item.autoReuse = true;
-            item.useAnimation = 15;
-            item.useTime = 10;
-            item.useStyle = 1;
-            item.consumable = true;
-            item.rare = 11;
-            item.value = Item.sellPrice(0, 12, 0, 0);
-            item.createTile = mod.TileType("PuriumAnvil");
+            Item.width = 28;
+            Item.height = 14;
+            Item.maxStack = 99;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = 1;
+            Item.consumable = true;
+            Item.rare = 11;
+            Item.value = Item.sellPrice(0, 12, 0, 0);
+            Item.createTile = Mod.Find<ModTile>("PuriumAnvil").Type;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(null, "PuriumBar", 10);
             recipe.AddTile(TileID.MythrilAnvil);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 }

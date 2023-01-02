@@ -15,15 +15,15 @@ namespace Bluemagic.Items.Abomination
 
         public override void SetDefaults()
         {
-            item.maxStack = 999;
-            item.consumable = true;
-            item.width = 24;
-            item.height = 24;
-            item.rare = 9;
-            item.expert = true;
+            Item.maxStack = 999;
+            Item.consumable = true;
+            Item.width = 24;
+            Item.height = 24;
+            Item.rare = 9;
+            Item.expert = true;
         }
 
-        public override int BossBagNPC => mod.NPCType("Abomination");
+        public override int BossBagNPC => Mod.Find<ModNPC>("Abomination").Type;
 
         public override bool CanRightClick()
         {
@@ -35,12 +35,12 @@ namespace Bluemagic.Items.Abomination
             player.TryGettingDevArmor();
             if (Main.rand.Next(7) == 0)
             {
-                player.QuickSpawnItem(mod.ItemType("AbominationMask"));
+                player.QuickSpawnItem(Mod.Find<ModItem>("AbominationMask").Type);
             }
-            player.QuickSpawnItem(mod.ItemType("MoltenDrill"));
-            player.QuickSpawnItem(mod.ItemType("DimensionalChest"));
-            player.QuickSpawnItem(mod.ItemType("MoltenBar"), 5);
-            player.QuickSpawnItem(mod.ItemType("SixColorShield"));
+            player.QuickSpawnItem(Mod.Find<ModItem>("MoltenDrill").Type);
+            player.QuickSpawnItem(Mod.Find<ModItem>("DimensionalChest").Type);
+            player.QuickSpawnItem(Mod.Find<ModItem>("MoltenBar").Type, 5);
+            player.QuickSpawnItem(Mod.Find<ModItem>("SixColorShield").Type);
         }
     }
 }

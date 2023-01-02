@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -58,7 +59,7 @@ namespace Bluemagic
                 instance.UpdateInstance();
                 if (instance.timer >= 300)
                 {
-                    Main.PlaySound(SoundID.Item107);
+                    SoundEngine.PlaySound(SoundID.Item107);
                     Overlays.Scene.Deactivate("Bluemagic:WorldReaver");
                     Filters.Scene.Deactivate("Bluemagic:WorldReaver");
                     Filters.Scene["Bluemagic:WorldReaver"].Opacity = 0f;
@@ -76,7 +77,7 @@ namespace Bluemagic
             }
             if (timer == 60)
             {
-                Main.PlaySound(SoundID.Item14);
+                SoundEngine.PlaySound(SoundID.Item14);
                 Damage(6666, false);
             }
             if (timer == 120 || timer == 180 || timer == 240)
@@ -91,7 +92,7 @@ namespace Bluemagic
                     float length = minLength + (float)rand.NextDouble() * (maxLength - minLength);
                     cracks.Add(new LineSegment(new Vector2(x, y), angle, length));
                 }
-                Main.PlaySound(SoundID.Item27);
+                SoundEngine.PlaySound(SoundID.Item27);
                 Damage(33333, true);
             }
             if (timer == 300)

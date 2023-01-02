@@ -7,10 +7,10 @@ namespace Bluemagic.Dusts
 {
     public class PixelHurt : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
+        public override bool IsLoadingEnabled(Mod mod)
         {
             texture = "Bluemagic/Dusts/Pixel";
-            return mod.Properties.Autoload;
+            return Mod.Properties/* tModPorter Note: Removed. Instead, assign the properties directly (ContentAutoloadingEnabled, GoreAutoloadingEnabled, MusicAutoloadingEnabled, and BackgroundAutoloadingEnabled) */.Autoload;
         }
 
         public override void OnSpawn(Dust dust)

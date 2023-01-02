@@ -9,7 +9,7 @@ namespace Bluemagic.Tiles
 {
     public class Shroomsand : BaseMushroomTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileSolid[Type] = true;
             Main.tileBrick[Type] = true;
@@ -17,8 +17,8 @@ namespace Bluemagic.Tiles
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
             Main.tileSand[Type] = true;
-            dustType = 17;
-            drop = mod.ItemType("Shroomsand");
+            DustType = 17;
+            ItemDrop = Mod.Find<ModItem>("Shroomsand").Type;
             AddMapEntry(new Color(93, 127, 255));
             TileID.Sets.Conversion.Sand[Type] = true;
             TileID.Sets.ForAdvancedCollision.ForSandshark[Type] = true;
@@ -28,7 +28,7 @@ namespace Bluemagic.Tiles
 
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
-            return TileUtils.TileFrame_Sand(i, j, mod.ProjectileType("ShroomsandBall"));
+            return TileUtils.TileFrame_Sand(i, j, Mod.Find<ModProjectile>("ShroomsandBall").Type);
         }
     }
 }

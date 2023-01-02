@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.UI.Chat;
 
 namespace Bluemagic.BlushieBoss
@@ -65,11 +66,11 @@ namespace Bluemagic.BlushieBoss
             string text = string.Concat(displayName, ": ", life, "/", lifeMax);
             DynamicSpriteFontExtensionMethods.DrawString(
                 spriteBatch,
-                Main.fontMouseText,
+                FontAssets.MouseText.Value,
                 text,
                 new Vector2(XLeft + BarLength / 2, yTop + midYOffset + barM.Height / 2),
                 frameColour, 0f,
-                ChatManager.GetStringSize(Main.fontMouseText, text, Vector2.One, BarLength) / 2,
+                ChatManager.GetStringSize(FontAssets.MouseText.Value, text, Vector2.One, BarLength) / 2,
                 1.1f, SpriteEffects.None, 0f);
         }
 

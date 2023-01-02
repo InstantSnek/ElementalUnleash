@@ -9,7 +9,7 @@ namespace Bluemagic.Tiles
 {
     public class MoltenBar : ModTile
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileShine[Type] = 1100;
             Main.tileSolid[Type] = true;
@@ -24,7 +24,7 @@ namespace Bluemagic.Tiles
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Molten Bar");
             AddMapEntry(new Color(255, 200, 100), name);
-            drop = mod.ItemType("MoltenBar");
+            ItemDrop = Mod.Find<ModItem>("MoltenBar").Type;
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)

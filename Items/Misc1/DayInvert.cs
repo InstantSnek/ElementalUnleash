@@ -15,18 +15,18 @@ namespace Bluemagic.Items.Misc1
 
         public override void SetDefaults()
         {
-            item.width = 12;
-            item.height = 20;
-            item.maxStack = 20;
-            item.rare = 4;
-            item.useStyle = 4;
-            item.useAnimation = 45;
-            item.useTime = 45;
-            item.UseSound = SoundID.Item44;
-            item.consumable = true;
+            Item.width = 12;
+            Item.height = 20;
+            Item.maxStack = 20;
+            Item.rare = 4;
+            Item.useStyle = 4;
+            Item.useAnimation = 45;
+            Item.useTime = 45;
+            Item.UseSound = SoundID.Item44;
+            Item.consumable = true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool? UseItem(Player player)/* tModPorter Suggestion: Return null instead of false */
         {
             if (Main.netMode != 1)
             {
@@ -48,12 +48,11 @@ namespace Bluemagic.Items.Misc1
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(null, "SolarDrop", 5);
             recipe.AddIngredient(null, "LunarDrop", 5);
             recipe.AddTile(TileID.MythrilAnvil);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 }

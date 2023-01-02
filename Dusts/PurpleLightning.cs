@@ -9,7 +9,7 @@ namespace Bluemagic.Dusts
     {
         public override void OnSpawn(Dust dust)
         {
-            updateType = 226;
+            UpdateType = 226;
         }
 
         public override Color? GetAlpha(Dust dust, Color lightColor)

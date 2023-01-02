@@ -14,27 +14,26 @@ namespace Bluemagic.Items.Salt
 
         public override void SetDefaults()
         {
-            item.width = 32;
-            item.height = 20;
-            item.maxStack = 30;
-            item.rare = 8;
-            item.value = 300;
-            item.UseSound = SoundID.Item2;
-            item.useStyle = 2;
-            item.useTurn = true;
-            item.useAnimation = 17;
-            item.useTime = 17;
-            item.consumable = true;
-            item.buffType = mod.BuffType("PinkSalty");
-            item.buffTime = 7200;
+            Item.width = 32;
+            Item.height = 20;
+            Item.maxStack = 30;
+            Item.rare = 8;
+            Item.value = 300;
+            Item.UseSound = SoundID.Item2;
+            Item.useStyle = 2;
+            Item.useTurn = true;
+            Item.useAnimation = 17;
+            Item.useTime = 17;
+            Item.consumable = true;
+            Item.buffType = Mod.Find<ModBuff>("PinkSalty").Type;
+            Item.buffTime = 7200;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(mod, "PinkSalt", 5);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(Mod, "PinkSalt", 5);
+            recipe.Register();
         }
     }
 }

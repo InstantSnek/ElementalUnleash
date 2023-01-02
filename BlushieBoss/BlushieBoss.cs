@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace Bluemagic.BlushieBoss
 {
@@ -110,12 +113,12 @@ namespace Bluemagic.BlushieBoss
 
         internal static void Load()
         {
-            types[0] = Bluemagic.Instance.NPCType("Blushiemagic");
-            types[1] = Bluemagic.Instance.NPCType("BlushiemagicK");
-            types[2] = Bluemagic.Instance.NPCType("BlushiemagicA");
-            types[3] = Bluemagic.Instance.NPCType("BlushiemagicL");
-            types[4] = Bluemagic.Instance.NPCType("BlushiemagicM");
-            types[5] = Bluemagic.Instance.NPCType("BlushiemagicJ");
+            types[0] = Bluemagic.Instance.Find<ModNPC>("Blushiemagic").Type;
+            types[1] = Bluemagic.Instance.Find<ModNPC>("BlushiemagicK").Type;
+            types[2] = Bluemagic.Instance.Find<ModNPC>("BlushiemagicA").Type;
+            types[3] = Bluemagic.Instance.Find<ModNPC>("BlushiemagicL").Type;
+            types[4] = Bluemagic.Instance.Find<ModNPC>("BlushiemagicM").Type;
+            types[5] = Bluemagic.Instance.Find<ModNPC>("BlushiemagicJ").Type;
             BulletWhiteTexture = Bluemagic.Instance.GetTexture("BlushieBoss/BulletWhite");
             BulletGoldTexture = Bluemagic.Instance.GetTexture("BlushieBoss/BulletGold");
             BulletGoldLargeTexture = Bluemagic.Instance.GetTexture("BlushieBoss/BulletGoldLarge");
@@ -264,7 +267,7 @@ namespace Bluemagic.BlushieBoss
                     if (player.Hitbox.Intersects(new Rectangle((int)crystalStars[k].X - 32, (int)crystalStars[k].Y - 32, 64, 64)))
                     {
                         crystalStars.RemoveAt(k);
-                        Main.PlaySound(SoundID.Item25);
+                        SoundEngine.PlaySound(SoundID.Item25);
                         k--;
                     }
                 }
@@ -793,7 +796,7 @@ namespace Bluemagic.BlushieBoss
                 }
                 if (timerA == 1680)
                 {
-                    Main.PlaySound(29, -1, -1, 104);
+                    SoundEngine.PlaySound(SoundID.Zombie104);
                 }
                 if (timerA >= 1680 && timerA < 1740)
                 {
@@ -958,7 +961,7 @@ namespace Bluemagic.BlushieBoss
                     }
                 }
             }
-            Item.NewItem((int)Origin.X, (int)(Origin.Y + ArenaSize * 0.3f), 0, 0, Bluemagic.Instance.ItemType("BlushieCheckpoint"));
+            Item.NewItem((int)Origin.X, (int)(Origin.Y + ArenaSize * 0.3f), 0, 0, Bluemagic.Instance.Find<ModItem>("BlushieCheckpoint").Type);
         }
 
         internal static void Phase3()
@@ -969,17 +972,17 @@ namespace Bluemagic.BlushieBoss
             {
                 if (Timer == 840)
                 {
-                    Main.PlaySound(29, -1, -1, 92, 1f, 0f);
+                    SoundEngine.PlaySound(SoundID.Zombie92);
                 }
                 else if (Timer == 960)
                 {
-                    Main.PlaySound(29, -1, -1, 104);
+                    SoundEngine.PlaySound(SoundID.Zombie104);
                 }
                 if (Timer >= 600 && Timer < 780)
                 {
                     for (int k = 0; k < 5; k++)
                     {
-                        int dust = Dust.NewDust(SkullPos - new Vector2(80f, 80f), 160, 160, Bluemagic.Instance.DustType("Smoke"), 0f, 0f, 0, Color.Black);
+                        int dust = Dust.NewDust(SkullPos - new Vector2(80f, 80f), 160, 160, Bluemagic.Instance.Find<ModDust>("Smoke").Type, 0f, 0f, 0, Color.Black);
                         Main.dust[dust].scale = 2.5f;
                         Main.dust[dust].noLight = true;
                     }
@@ -988,10 +991,10 @@ namespace Bluemagic.BlushieBoss
                 {
                     for (int k = 0; k < 1; k++)
                     {
-                        int dust = Dust.NewDust(SkullPos - new Vector2(80f, 80f) + new Vector2(26f, 58f), 36, 16, Bluemagic.Instance.DustType("Smoke"), 0f, 0f, 0, Color.Black);
+                        int dust = Dust.NewDust(SkullPos - new Vector2(80f, 80f) + new Vector2(26f, 58f), 36, 16, Bluemagic.Instance.Find<ModDust>("Smoke").Type, 0f, 0f, 0, Color.Black);
                         Main.dust[dust].scale = 2.5f;
                         Main.dust[dust].noLight = true;
-                        dust = Dust.NewDust(SkullPos - new Vector2(80f, 80f) + new Vector2(98f, 58f), 36, 16, Bluemagic.Instance.DustType("Smoke"), 0f, 0f, 0, Color.Black);
+                        dust = Dust.NewDust(SkullPos - new Vector2(80f, 80f) + new Vector2(98f, 58f), 36, 16, Bluemagic.Instance.Find<ModDust>("Smoke").Type, 0f, 0f, 0, Color.Black);
                         Main.dust[dust].scale = 2.5f;
                         Main.dust[dust].noLight = true;
                     }
@@ -1000,7 +1003,7 @@ namespace Bluemagic.BlushieBoss
                 {
                     for (int k = 0; k < 300; k++)
                     {
-                        int dust = Dust.NewDust(SkullPos - new Vector2(80f, 80f), 160, 160, Bluemagic.Instance.DustType("Smoke"), 0f, 0f, 0, Color.Black);
+                        int dust = Dust.NewDust(SkullPos - new Vector2(80f, 80f), 160, 160, Bluemagic.Instance.Find<ModDust>("Smoke").Type, 0f, 0f, 0, Color.Black);
                         Main.dust[dust].scale = 2.5f;
                         Main.dust[dust].noLight = true;
                     }
@@ -1753,7 +1756,7 @@ namespace Bluemagic.BlushieBoss
 
             if (timer == 0)
             {
-                Main.PlaySound(4, -1, -1, 61);
+                SoundEngine.PlaySound(SoundID.NPCDeath61);
             }
             if (timer == 390)
             {
@@ -1776,7 +1779,7 @@ namespace Bluemagic.BlushieBoss
             timer -= 30;
             if (timer == 0)
             {
-                Main.PlaySound(29, -1, -1, 104);
+                SoundEngine.PlaySound(SoundID.Zombie104);
             }
             float speed = 4f + 28f * timer / 120f;
             if (speed > 32f)
@@ -1863,7 +1866,7 @@ namespace Bluemagic.BlushieBoss
             }
             if (timer == 60 || timer == 120)
             {
-                Main.PlaySound(40);
+                SoundEngine.PlaySound(SoundID.Camera);
             }
             if (timer == 120)
             {
@@ -1880,11 +1883,11 @@ namespace Bluemagic.BlushieBoss
                     gore = Gore.NewGore(ArmRightPos, Vector2.Zero, Main.rand.Next(435, 438), 2f);
                     Main.gore[gore].velocity = 0.25f * k * (Main.rand.NextFloat() * MathHelper.TwoPi).ToRotationVector2();
                 }
-                Main.PlaySound(16);
+                SoundEngine.PlaySound(SoundID.DoubleJump);
             }
             if (timer == 360)
             {
-                Main.PlaySound(SoundID.DD2_WinScene);
+                SoundEngine.PlaySound(SoundID.DD2_WinScene);
             }
             if (timer > 360 && timer <= 960)
             {
@@ -1905,10 +1908,10 @@ namespace Bluemagic.BlushieBoss
                 {
                     NetMessage.SendData(MessageID.WorldData);
                 }
-                Item.NewItem((int)Origin.X, (int)Origin.Y, 0, 0, Bluemagic.Instance.ItemType("PuriumCoin"), Main.expertMode ? Main.rand.Next(48, 53) : Main.rand.Next(24, 27));
-                Item.NewItem((int)SkullPos.X, (int)SkullPos.Y, 0, 0, Bluemagic.Instance.ItemType("PuriumCoin"), Main.expertMode ? Main.rand.Next(48, 53) : Main.rand.Next(24, 27));
-                Item.NewItem((int)Origin.X, (int)Origin.Y, 0, 0, Bluemagic.Instance.ItemType("SkyDragonHeart"));
-                Item.NewItem((int)SkullPos.X, (int)SkullPos.Y, 0, 0, Bluemagic.Instance.ItemType("WorldReaver"));
+                Item.NewItem((int)Origin.X, (int)Origin.Y, 0, 0, Bluemagic.Instance.Find<ModItem>("PuriumCoin").Type, Main.expertMode ? Main.rand.Next(48, 53) : Main.rand.Next(24, 27));
+                Item.NewItem((int)SkullPos.X, (int)SkullPos.Y, 0, 0, Bluemagic.Instance.Find<ModItem>("PuriumCoin").Type, Main.expertMode ? Main.rand.Next(48, 53) : Main.rand.Next(24, 27));
+                Item.NewItem((int)Origin.X, (int)Origin.Y, 0, 0, Bluemagic.Instance.Find<ModItem>("SkyDragonHeart").Type);
+                Item.NewItem((int)SkullPos.X, (int)SkullPos.Y, 0, 0, Bluemagic.Instance.Find<ModItem>("WorldReaver").Type);
                 Main.NewText(Language.GetTextValue("Announcement.HasBeenDefeated_Single", "blushiemagic"));
                 Reset();
             }
@@ -1989,7 +1992,7 @@ namespace Bluemagic.BlushieBoss
             else
             {
                 NetworkText text = NetworkText.FromLiteral(message);
-                NetMessage.BroadcastChatMessage(text, Color.White);
+                ChatHelper.BroadcastChatMessage(text, Color.White);
             }
         }
 
@@ -2003,7 +2006,7 @@ namespace Bluemagic.BlushieBoss
             else
             {
                 NetworkText text = NetworkText.FromKey("Mods.Bluemagic.NPCTalk", name, message);
-                NetMessage.BroadcastChatMessage(text, new Color(r, g, b));
+                ChatHelper.BroadcastChatMessage(text, new Color(r, g, b));
             }
         }
 

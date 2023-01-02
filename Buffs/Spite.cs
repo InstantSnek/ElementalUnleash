@@ -7,7 +7,7 @@ namespace Bluemagic.Buffs
 {
     public class Spite : ModBuff
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Spite");
             Description.SetDefault("12% increased damage and critical strike chance");
@@ -18,15 +18,15 @@ namespace Bluemagic.Buffs
         {
             player.buffImmune[BuffID.Wrath] = true;
             player.buffImmune[BuffID.Rage] = true;
-            player.meleeDamage += 0.12f;
-            player.rangedDamage += 0.12f;
-            player.magicDamage += 0.12f;
-            player.minionDamage += 0.12f;
-            player.thrownDamage += 0.12f;
-            player.meleeCrit += 12;
-            player.rangedCrit += 12;
-            player.magicCrit += 12;
-            player.thrownCrit += 12;
+            player.GetDamage(DamageClass.Melee) += 0.12f;
+            player.GetDamage(DamageClass.Ranged) += 0.12f;
+            player.GetDamage(DamageClass.Magic) += 0.12f;
+            player.GetDamage(DamageClass.Summon) += 0.12f;
+            player.GetDamage(DamageClass.Throwing) += 0.12f;
+            player.GetCritChance(DamageClass.Generic) += 12;
+            player.GetCritChance(DamageClass.Ranged) += 12;
+            player.GetCritChance(DamageClass.Magic) += 12;
+            player.GetCritChance(DamageClass.Throwing) += 12;
         }
     }
 }

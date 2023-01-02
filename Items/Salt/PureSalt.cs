@@ -15,30 +15,29 @@ namespace Bluemagic.Items.Salt
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 14;
-            item.maxStack = 999;
-            item.rare = 12;
-            item.value = 500;
+            Item.width = 16;
+            Item.height = 14;
+            Item.maxStack = 999;
+            Item.rare = 12;
+            Item.value = 500;
         }
 
         public override void UpdateInventory(Player player)
         {
-            float increase = 0.00001f * item.stack;
-            player.meleeDamage += increase;
-            player.rangedDamage += increase;
-            player.magicDamage += increase;
-            player.minionDamage += increase;
-            player.thrownDamage += increase;
+            float increase = 0.00001f * Item.stack;
+            player.GetDamage(DamageClass.Melee) += increase;
+            player.GetDamage(DamageClass.Ranged) += increase;
+            player.GetDamage(DamageClass.Magic) += increase;
+            player.GetDamage(DamageClass.Summon) += increase;
+            player.GetDamage(DamageClass.Throwing) += increase;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            Recipe recipe = Recipe.Create(Mod, "Salt", 5);
             recipe.AddIngredient(this);
             recipe.needWater = true;
-            recipe.SetResult(mod, "Salt", 5);
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 }

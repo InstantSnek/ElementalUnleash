@@ -16,29 +16,28 @@ namespace Bluemagic.Items.PurityCraft
 
         public override void SetDefaults()
         {
-            item.width = 24;
-            item.height = 28;
-            item.accessory = true;
-            item.rare = 11;
-            item.value = Item.sellPrice(0, 30, 0, 0);
+            Item.width = 24;
+            Item.height = 28;
+            Item.accessory = true;
+            Item.rare = 11;
+            Item.value = Item.sellPrice(0, 30, 0, 0);
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            player.minionDamage += 0.3f;
-            player.minionKB += 2.5f;
+            player.GetDamage(DamageClass.Summon) += 0.3f;
+            player.GetKnockback(DamageClass.Summon).Base += 2.5f;
             player.maxMinions += 3;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.PapyrusScarab);
             recipe.AddIngredient(null, "SummonerSeal");
             recipe.AddIngredient(null, "InfinityCrystal");
             recipe.AddTile(null, "PuriumAnvil");
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 }

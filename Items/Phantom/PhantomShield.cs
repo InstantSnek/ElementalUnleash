@@ -19,21 +19,21 @@ namespace Bluemagic.Items.Phantom
 
         public override void SetDefaults()
         {
-            item.width = 32;
-            item.height = 32;
-            item.value = Item.buyPrice(0, 10, 0, 0);
-            item.rare = 9;
-            item.expert = true;
-            item.accessory = true;
-            item.defense = 6;
+            Item.width = 32;
+            Item.height = 32;
+            Item.value = Item.buyPrice(0, 10, 0, 0);
+            Item.rare = 9;
+            Item.expert = true;
+            Item.accessory = true;
+            Item.defense = 6;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            player.AddBuff(mod.BuffType("PhantomShield"), 5, true);
+            player.AddBuff(Mod.Find<ModBuff>("PhantomShield").Type, 5, true);
             if (player.whoAmI != Main.myPlayer && Main.player[Main.myPlayer].team == player.team && player.team != 0)
             {
-                Main.player[Main.myPlayer].AddBuff(mod.BuffType("PhantomShield"), 5, true);
+                Main.player[Main.myPlayer].AddBuff(Mod.Find<ModBuff>("PhantomShield").Type, 5, true);
             }
         }
     }

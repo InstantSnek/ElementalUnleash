@@ -15,15 +15,15 @@ namespace Bluemagic.Items.ChaosSpirit
 
         public override void SetDefaults()
         {
-            item.maxStack = 999;
-            item.consumable = true;
-            item.width = 24;
-            item.height = 24;
-            item.rare = 11;
-            item.expert = true;
+            Item.maxStack = 999;
+            Item.consumable = true;
+            Item.width = 24;
+            Item.height = 24;
+            Item.rare = 11;
+            Item.expert = true;
         }
 
-        public override int BossBagNPC => mod.NPCType("ChaosSpirit");
+        public override int BossBagNPC => Mod.Find<ModNPC>("ChaosSpirit").Type;
 
         public override bool CanRightClick()
         {
@@ -37,14 +37,14 @@ namespace Bluemagic.Items.ChaosSpirit
             int choice = Main.rand.Next(7);
             if (choice == 0)
             {
-                player.QuickSpawnItem(mod.ItemType("ChaosSpiritMask"));
+                player.QuickSpawnItem(Mod.Find<ModItem>("ChaosSpiritMask").Type);
             }
             else if (choice == 1)
             {
-                player.QuickSpawnItem(mod.ItemType("CataclysmMask"));
+                player.QuickSpawnItem(Mod.Find<ModItem>("CataclysmMask").Type);
             }
-            player.QuickSpawnItem(mod.ItemType("ChaosCrystal"));
-            player.QuickSpawnItem(mod.ItemType("CataclysmCrystal"));
+            player.QuickSpawnItem(Mod.Find<ModItem>("ChaosCrystal").Type);
+            player.QuickSpawnItem(Mod.Find<ModItem>("CataclysmCrystal").Type);
         }
     }
 }

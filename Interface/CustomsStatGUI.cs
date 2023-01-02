@@ -4,7 +4,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -99,7 +102,7 @@ namespace Bluemagic.Interface
                 if (oldSelected != selected)
                 {
                     scroll = 0;
-                    Main.PlaySound(12, -1, -1, 1);
+                    SoundEngine.PlaySound(SoundID.MenuTick);
                 }
             }
         }
@@ -120,7 +123,7 @@ namespace Bluemagic.Interface
             if (IsMouseOver(panel))
             {
                 Main.player[Main.myPlayer].mouseInterface = true;
-                Main.player[Main.myPlayer].showItemIcon = false;
+                Main.player[Main.myPlayer].cursorItemIconEnabled = false;
                 InterfaceHelper.HideItemIconCache();
             }
             string text;
@@ -135,7 +138,7 @@ namespace Bluemagic.Interface
                 text = "Chaos Boosts";
             }
             CalculatedStyle dim = panel.GetDimensions();
-            DynamicSpriteFont font = Main.fontMouseText;
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
             Vector2 textSize = font.MeasureString(text);
             Vector2 drawPos = dim.Position() + new Vector2((dim.Width - textSize.X) / 2f, 10f);
             Utils.DrawBorderString(Main.spriteBatch, text, drawPos, Color.White);
@@ -175,12 +178,12 @@ namespace Bluemagic.Interface
             if (LeftArrowActive() && mouseOverLeftArrow && Clicking())
             {
                 scroll--;
-                Main.PlaySound(12, -1, -1, 1);
+                SoundEngine.PlaySound(SoundID.MenuTick);
             }
             else if (RightArrowActive() && mouseOverRightArrow && Clicking())
             {
                 scroll++;
-                Main.PlaySound(12, -1, -1, 1);
+                SoundEngine.PlaySound(SoundID.MenuTick);
             }
         }
 
@@ -193,7 +196,7 @@ namespace Bluemagic.Interface
         private static void DrawStat(CustomStat stat, Vector2 offset)
         {
             Mod mod = Bluemagic.Instance;
-            Vector2 textSize = Main.fontMouseText.MeasureString(stat.Name);
+            Vector2 textSize = FontAssets.MouseText.Value.MeasureString(stat.Name);
             Vector2 drawPos = offset + new Vector2(0f, 16f - textSize.Y / 2f);
             Utils.DrawBorderString(Main.spriteBatch, stat.Name, offset, Color.White);
             for (int k = 0; k < CustomStat.MaxPoints; k++)
@@ -211,7 +214,7 @@ namespace Bluemagic.Interface
             {
                 stat.Points++;
                 curStats.Points--;
-                Main.PlaySound(12, -1, -1, 1);
+                SoundEngine.PlaySound(SoundID.MenuTick);
             }
             buttonText = stat.Inactive ? mod.GetTexture("Interface/BoxUnchecked") : mod.GetTexture("Interface/BoxChecked");
             drawPos = offset + new Vector2(380f, 0f);

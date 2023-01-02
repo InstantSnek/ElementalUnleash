@@ -16,10 +16,10 @@ namespace Bluemagic.Items.ChaosSpirit
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.rare = 1;
-            item.vanity = true;
+            Item.width = 18;
+            Item.height = 18;
+            Item.rare = 1;
+            Item.vanity = true;
         }
 
         public override void DrawArmorColor(Player drawPlayer, float shadow, ref Color color, ref int glowMask, ref Color glowMaskColor)

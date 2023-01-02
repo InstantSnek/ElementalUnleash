@@ -15,33 +15,32 @@ namespace Bluemagic.Items.Purium.Weapons
 
         public override void SetDefaults()
         {
-            item.width = 26;
-            item.height = 28;
-            item.useStyle = 1;
-            item.useAnimation = 27;
-            item.useTime = 27;
-            item.channel = true;
-            item.noMelee = true;
-            item.damage = 757;
-            item.knockBack = 6.5f;
-            item.autoReuse = false;
-            item.useTurn = false;
-            item.rare = 11;
-            item.magic = true;
-            item.value = Item.sellPrice(0, 12, 0, 0);
-            item.UseSound = SoundID.Item28;
-            item.shoot = mod.ProjectileType("PuriumStaff");
-            item.mana = 18;
-            item.shootSpeed = 6f;
+            Item.width = 26;
+            Item.height = 28;
+            Item.useStyle = 1;
+            Item.useAnimation = 27;
+            Item.useTime = 27;
+            Item.channel = true;
+            Item.noMelee = true;
+            Item.damage = 757;
+            Item.knockBack = 6.5f;
+            Item.autoReuse = false;
+            Item.useTurn = false;
+            Item.rare = 11;
+            Item.DamageType = DamageClass.Magic;
+            Item.value = Item.sellPrice(0, 12, 0, 0);
+            Item.UseSound = SoundID.Item28;
+            Item.shoot = Mod.Find<ModProjectile>("PuriumStaff").Type;
+            Item.mana = 18;
+            Item.shootSpeed = 6f;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(null, "PuriumBar", 12);
             recipe.AddTile(null, "PuriumAnvil");
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 }

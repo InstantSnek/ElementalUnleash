@@ -8,7 +8,7 @@ namespace Bluemagic.Buffs.PuritySpirit
 {
     public class Undead2 : ModBuff
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Undead Sickness");
             Description.SetDefault("You are being harmed by recovery");

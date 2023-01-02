@@ -7,11 +7,11 @@ namespace Bluemagic.Walls
 {
     public class MushroomBrickWall : ModWall
     {
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.wallHouse[Type] = true;
-            dustType = 26;
-            drop = mod.ItemType("MushroomBrickWall");
+            DustType = 26;
+            ItemDrop = Mod.Find<ModItem>("MushroomBrickWall").Type;
             AddMapEntry(new Color(64, 62, 80));
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Xna.Framework;
@@ -13,7 +14,7 @@ using Bluemagic.BlushieBoss;
 
 namespace Bluemagic
 {
-    public class BluemagicWorld : ModWorld
+    public class BluemagicWorld : ModSystem
     {
         private const int saveVersion = 0;
         public static bool eclipsePassed = false;
@@ -34,7 +35,7 @@ namespace Bluemagic
         public static float blushieCheckpoint = 0f;
         public static bool downedBlushie = false;
 
-        public override void Initialize()
+        public override void OnWorldLoad()/* tModPorter Suggestion: Also override OnWorldUnload, and mirror your worldgen-sensitive data initialization in PreWorldGen */
         {
             eclipsePassed = false;
             pumpkinMoonPassed = false;
@@ -99,7 +100,7 @@ namespace Bluemagic
             }
         }
 
-        public override TagCompound Save()
+        public override void SaveWorldData(TagCompound tag)/* tModPorter Suggestion: Edit tag parameter instead of returning new TagCompound */
         {
             FixCheckpoints();
             TagCompound tag = new TagCompound();
@@ -123,7 +124,7 @@ namespace Bluemagic
             return tag;
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadWorldData(TagCompound tag)
         {
             eclipsePassed = tag.GetBool("eclipsePassed");
             pumpkinMoonPassed = tag.GetBool("pumpkinMoonPassed");
@@ -249,14 +250,14 @@ namespace Bluemagic
             modPlayer.saltLamp = false;
         }
 
-        public override void TileCountsAvailable(int[] tileCounts)
+        public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
         {
-            Main.shroomTiles += tileCounts[mod.TileType("Shroomstone")];
-            Main.shroomTiles += tileCounts[mod.TileType("Shroomsand")];
-            Main.shroomTiles += tileCounts[mod.TileType("DarkBlueIce")];
+            Main.SceneMetrics.MushroomTileCount += tileCounts[Mod.Find<ModTile>("Shroomstone").Type];
+            Main.SceneMetrics.MushroomTileCount += tileCounts[Mod.Find<ModTile>("Shroomsand").Type];
+            Main.SceneMetrics.MushroomTileCount += tileCounts[Mod.Find<ModTile>("DarkBlueIce").Type];
         }
 
-        public override void PostUpdate()
+        public override void PostUpdateWorld()
         {
             Bluemagic.UpdatePureColor();
             WorldReaver.UpdateGlitchText();
@@ -285,7 +286,7 @@ namespace Bluemagic
             numPuriumGens += 1;
             for (double k = 0; k < (Main.maxTilesX - 200) * (Main.maxTilesY - 150 - (int)Main.rockLayer) / 10000.0 / (double)numPuriumGens; k += 1.0)
             {
-                WorldGen.OreRunner(WorldGen.genRand.Next(100, Main.maxTilesX - 100), WorldGen.genRand.Next((int)Main.rockLayer, Main.maxTilesY - 150), (double)WorldGen.genRand.Next(4, 8), WorldGen.genRand.Next(4, 8), (ushort)Bluemagic.Instance.TileType("PuriumOre"));
+                WorldGen.OreRunner(WorldGen.genRand.Next(100, Main.maxTilesX - 100), WorldGen.genRand.Next((int)Main.rockLayer, Main.maxTilesY - 150), (double)WorldGen.genRand.Next(4, 8), WorldGen.genRand.Next(4, 8), (ushort)Bluemagic.Instance.Find<ModTile>("PuriumOre").Type);
             }
             Bluemagic.NewText("Mods.Bluemagic.PuriumOreGen", 100, 220, 100);
             if (Main.netMode == 2)

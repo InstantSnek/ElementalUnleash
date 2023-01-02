@@ -4,7 +4,9 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
@@ -97,7 +99,7 @@ namespace Bluemagic
 
         public override void Initialize()
         {
-            buffImmuneCounter = new int[player.buffImmune.Length];
+            buffImmuneCounter = new int[Player.buffImmune.Length];
             chaosStats = CustomStats.CreateChaosStats();
             cataclysmStats = CustomStats.CreateCataclysmStats();
         }
@@ -106,8 +108,8 @@ namespace Bluemagic
         {
             if (lifeMagnet2)
             {
-                player.potionDelayTime = (int)(player.potionDelayTime * 0.8f);
-                player.restorationDelayTime = (int)(player.restorationDelayTime * 0.8f);
+                Player.potionDelayTime = (int)(Player.potionDelayTime * 0.8f);
+                Player.restorationDelayTime = (int)(Player.restorationDelayTime * 0.8f);
             }
             eFlames = false;
             customMeleeEnchant = 0;
@@ -121,10 +123,10 @@ namespace Bluemagic
             if (liquified < 0)
             {
                 liquified = 0;
-                player.position.X -= (player.width - Player.defaultWidth) / 2f;
-                player.position.Y += player.height - Player.defaultHeight;
-                player.width = Player.defaultWidth;
-                player.height = Player.defaultHeight;
+                Player.position.X -= (Player.width - Player.defaultWidth) / 2f;
+                Player.position.Y += Player.height - Player.defaultHeight;
+                Player.width = Player.defaultWidth;
+                Player.height = Player.defaultHeight;
             }
             else
             {
@@ -154,7 +156,7 @@ namespace Bluemagic
             skyDragon = false;
             if (extraAccessory2)
             {
-                player.extraAccessorySlots = 2;
+                Player.extraAccessorySlots = 2;
             }
         }
 
@@ -173,16 +175,16 @@ namespace Bluemagic
                 heroLives = 0;
                 if (Main.netMode == 1)
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte)MessageType.HeroLives);
-                    packet.Write(player.whoAmI);
+                    packet.Write(Player.whoAmI);
                     packet.Write(heroLives);
                     packet.Send();
                 }
             }
         }
 
-        public override TagCompound Save()
+        public override void SaveData(TagCompound tag)/* tModPorter Suggestion: Edit tag parameter instead of returning new TagCompound */
         {
             TagCompound tag = new TagCompound();
             tag["version"] = 0;
@@ -193,7 +195,7 @@ namespace Bluemagic
             return tag;
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
             extraAccessory2 = tag.GetBool("extraAccessory2");
             puriumShieldCharge = tag.GetFloat("puriumShieldCharge");
@@ -218,15 +220,15 @@ namespace Bluemagic
 
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
-            ModPacket packet = mod.GetPacket(512);
+            ModPacket packet = Mod.GetPacket(512);
             packet.Write((byte)MessageType.CustomStats);
-            packet.Write((byte)player.whoAmI);
+            packet.Write((byte)Player.whoAmI);
             packet.Write((byte)0);
             chaosStats.NetSend(packet);
             packet.Send(toWho, fromWho);
-            packet = mod.GetPacket(512);
+            packet = Mod.GetPacket(512);
             packet.Write((byte)MessageType.CustomStats);
-            packet.Write((byte)player.whoAmI);
+            packet.Write((byte)Player.whoAmI);
             packet.Write((byte)1);
             cataclysmStats.NetSend(packet);
             packet.Send(toWho, fromWho);
@@ -237,18 +239,18 @@ namespace Bluemagic
             BluemagicPlayer clone = clientPlayer as BluemagicPlayer;
             if (!chaosStats.Equals(clone.chaosStats))
             {
-                ModPacket packet = mod.GetPacket(512);
+                ModPacket packet = Mod.GetPacket(512);
                 packet.Write((byte)MessageType.CustomStats);
-                packet.Write((byte)player.whoAmI);
+                packet.Write((byte)Player.whoAmI);
                 packet.Write((byte)0);
                 chaosStats.NetSend(packet);
                 packet.Send();
             }
             if (!cataclysmStats.Equals(clone.cataclysmStats))
             {
-                ModPacket packet = mod.GetPacket(512);
+                ModPacket packet = Mod.GetPacket(512);
                 packet.Write((byte)MessageType.CustomStats);
-                packet.Write((byte)player.whoAmI);
+                packet.Write((byte)Player.whoAmI);
                 packet.Write((byte)1);
                 cataclysmStats.NetSend(packet);
                 packet.Send();
@@ -257,22 +259,22 @@ namespace Bluemagic
 
         private bool AnyChaosSpirit()
         {
-            return NPC.AnyNPCs(mod.NPCType("ChaosSpirit")) || NPC.AnyNPCs(mod.NPCType("ChaosSpirit2")) || NPC.AnyNPCs(mod.NPCType("ChaosSpirit3"));
+            return NPC.AnyNPCs(Mod.Find<ModNPC>("ChaosSpirit").Type) || NPC.AnyNPCs(Mod.Find<ModNPC>("ChaosSpirit2").Type) || NPC.AnyNPCs(Mod.Find<ModNPC>("ChaosSpirit3").Type);
         }
 
         private bool AnyTerraSpirit()
         {
-            return NPC.AnyNPCs(mod.NPCType("TerraSpirit")) || NPC.AnyNPCs(mod.NPCType("TerraSpirit2"));
+            return NPC.AnyNPCs(Mod.Find<ModNPC>("TerraSpirit").Type) || NPC.AnyNPCs(Mod.Find<ModNPC>("TerraSpirit2").Type);
         }
 
         private bool IsChaosSpirit(int type)
         {
-            return type == mod.NPCType("ChaosSpirit") || type == mod.NPCType("ChaosSpirit2") || type == mod.NPCType("ChaosSpirit3");
+            return type == Mod.Find<ModNPC>("ChaosSpirit").Type || type == Mod.Find<ModNPC>("ChaosSpirit2").Type || type == Mod.Find<ModNPC>("ChaosSpirit3").Type;
         }
 
         private bool IsTerraSpirit(int type)
         {
-            return type == mod.NPCType("TerraSpirit") || type == mod.NPCType("TerraSpirit2");
+            return type == Mod.Find<ModNPC>("TerraSpirit").Type || type == Mod.Find<ModNPC>("TerraSpirit2").Type;
         }
 
         public override void UpdateBiomeVisuals()
@@ -292,7 +294,7 @@ namespace Bluemagic
             {
                 useChaos = true;
             }
-            else if (NPC.AnyNPCs(mod.NPCType("PuritySpirit")))
+            else if (NPC.AnyNPCs(Mod.Find<ModNPC>("PuritySpirit").Type))
             {
                 usePurity = true;
             }
@@ -300,63 +302,63 @@ namespace Bluemagic
             {
                 useVoidMonolith = true;
             }
-            player.ManageSpecialBiomeVisuals("Bluemagic:TerraSpirit", useTerra);
-            player.ManageSpecialBiomeVisuals("Bluemagic:ChaosSpirit", useChaos);
-            player.ManageSpecialBiomeVisuals("Bluemagic:PuritySpirit", usePurity);
-            player.ManageSpecialBiomeVisuals("Bluemagic:MonolithVoid", useVoidMonolith);
+            Player.ManageSpecialBiomeVisuals("Bluemagic:TerraSpirit", useTerra);
+            Player.ManageSpecialBiomeVisuals("Bluemagic:ChaosSpirit", useChaos);
+            Player.ManageSpecialBiomeVisuals("Bluemagic:PuritySpirit", usePurity);
+            Player.ManageSpecialBiomeVisuals("Bluemagic:MonolithVoid", useVoidMonolith);
         }
 
         public override void UpdateBadLifeRegen()
         {
             if (eFlames)
             {
-                if (player.lifeRegen > 0)
+                if (Player.lifeRegen > 0)
                 {
-                    player.lifeRegen = 0;
+                    Player.lifeRegen = 0;
                 }
-                player.lifeRegenTime = 0;
-                player.lifeRegen -= 16;
+                Player.lifeRegenTime = 0;
+                Player.lifeRegen -= 16;
             }
             if (healHurt > 0)
             {
-                if (player.lifeRegen > 0)
+                if (Player.lifeRegen > 0)
                 {
-                    player.lifeRegen = 0;
+                    Player.lifeRegen = 0;
                 }
-                player.lifeRegenTime = 0;
-                player.lifeRegen -= 120 * healHurt;
+                Player.lifeRegenTime = 0;
+                Player.lifeRegen -= 120 * healHurt;
             }
             if (chaosPressure > 0)
             {
-                player.lifeRegenTime -= chaosPressure;
-                player.lifeRegen -= chaosPressure;
-                if (player.lifeRegenTime < 0)
+                Player.lifeRegenTime -= chaosPressure;
+                Player.lifeRegen -= chaosPressure;
+                if (Player.lifeRegenTime < 0)
                 {
-                    player.lifeRegenTime = 0;
+                    Player.lifeRegenTime = 0;
                 }
             }
             if (blushieImmune > 0)
             {
-                if (player.lifeRegen > 0)
+                if (Player.lifeRegen > 0)
                 {
-                    player.lifeRegen = 0;
+                    Player.lifeRegen = 0;
                 }
-                player.lifeRegenTime = 0;
-                if (!Bluemagic.testing || player.statLife > 1)
+                Player.lifeRegenTime = 0;
+                if (!Bluemagic.testing || Player.statLife > 1)
                 {
-                    player.lifeRegen -= 32;
+                    Player.lifeRegen -= 32;
                 }
             }
         }
 
         public override void UpdateLifeRegen()
         {
-            if (player.lifeRegen < 0 && cancelBadRegen > 0)
+            if (Player.lifeRegen < 0 && cancelBadRegen > 0)
             {
-                player.lifeRegen += cancelBadRegen;
-                if (player.lifeRegen > 0)
+                Player.lifeRegen += cancelBadRegen;
+                if (Player.lifeRegen > 0)
                 {
-                    player.lifeRegen = 0;
+                    Player.lifeRegen = 0;
                 }
             }
         }
@@ -365,13 +367,13 @@ namespace Bluemagic
         {
             for (int k = 0; k < 1000; k++)
             {
-                if (Main.projectile[k].active && Main.projectile[k].owner == player.whoAmI && Main.projectile[k].type == mod.ProjectileType("CleanserBeam"))
+                if (Main.projectile[k].active && Main.projectile[k].owner == Player.whoAmI && Main.projectile[k].type == Mod.Find<ModProjectile>("CleanserBeam").Type)
                 {
-                    player.controlLeft = false;
-                    player.controlRight = false;
-                    player.controlUp = false;
-                    player.controlDown = false;
-                    player.controlJump = false;
+                    Player.controlLeft = false;
+                    Player.controlRight = false;
+                    Player.controlUp = false;
+                    Player.controlDown = false;
+                    Player.controlJump = false;
                     break;
                 }
             }
@@ -381,7 +383,7 @@ namespace Bluemagic
         {
             if (saltLamp)
             {
-                player.AddBuff(mod.BuffType("SaltLamp"), 2, false);
+                Player.AddBuff(Mod.Find<ModBuff>("SaltLamp").Type, 2, false);
             }
             if (heroLives > 0)
             {
@@ -389,7 +391,7 @@ namespace Bluemagic
                 for (int k = 0; k < 200; k++)
                 {
                     NPC npc = Main.npc[k];
-                    if (npc.active && npc.type == mod.NPCType("PuritySpirit"))
+                    if (npc.active && npc.type == Mod.Find<ModNPC>("PuritySpirit").Type)
                     {
                         flag = true;
                         PuritySpiritTeleport(npc);
@@ -412,15 +414,15 @@ namespace Bluemagic
                 }
                 if (heroLives == 1)
                 {
-                    player.AddBuff(mod.BuffType("HeroOne"), 2);
+                    Player.AddBuff(Mod.Find<ModBuff>("HeroOne").Type, 2);
                 }
                 else if (heroLives == 2)
                 {
-                    player.AddBuff(mod.BuffType("HeroTwo"), 2);
+                    Player.AddBuff(Mod.Find<ModBuff>("HeroTwo").Type, 2);
                 }
                 else if (heroLives == 3)
                 {
-                    player.AddBuff(mod.BuffType("HeroThree"), 3);
+                    Player.AddBuff(Mod.Find<ModBuff>("HeroThree").Type, 3);
                 }
             }
             else
@@ -462,30 +464,30 @@ namespace Bluemagic
             }
             if (CursedMount())
             {
-                if (player.mount.Active)
+                if (Player.mount.Active)
                 {
-                    player.mount.Dismount(player);
+                    Player.mount.Dismount(Player);
                 }
-                player.AddBuff(mod.BuffType("NoMount"), 5);
+                Player.AddBuff(Mod.Find<ModBuff>("NoMount").Type, 5);
             }
-            lastPos = player.position;
+            lastPos = Player.position;
         }
 
         public bool CursedMount()
         {
-            return BlushieBoss.BlushieBoss.Players[player.whoAmI] && BlushieBoss.BlushieBoss.Phase == 3 && (BlushieBoss.BlushieBoss.Phase3Attack > 7 || (BlushieBoss.BlushieBoss.Phase3Attack == 7 && BlushieBoss.BlushieBoss.Timer >= 2210));
+            return BlushieBoss.BlushieBoss.Players[Player.whoAmI] && BlushieBoss.BlushieBoss.Phase == 3 && (BlushieBoss.BlushieBoss.Phase3Attack > 7 || (BlushieBoss.BlushieBoss.Phase3Attack == 7 && BlushieBoss.BlushieBoss.Timer >= 2210));
         }
 
         public void CheckBadHeal()
         {
-            if (prevLife >= 0 && badHeal && player.statLife > prevLife)
+            if (prevLife >= 0 && badHeal && Player.statLife > prevLife)
             {
-                int hurt = 2 * (player.statLife - prevLife);
-                player.statLife -= hurt;
-                CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), CombatText.DamagedFriendly, hurt.ToString(), false, false);
-                if (player.statLife <= 0 && player.whoAmI == Main.myPlayer)
+                int hurt = 2 * (Player.statLife - prevLife);
+                Player.statLife -= hurt;
+                CombatText.NewText(new Rectangle((int)Player.position.X, (int)Player.position.Y, Player.width, Player.height), CombatText.DamagedFriendly, hurt.ToString(), false, false);
+                if (Player.statLife <= 0 && Player.whoAmI == Main.myPlayer)
                 {
-                    player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " was dissolved by holy powers"), hurt, 0, false);
+                    Player.KillMe(PlayerDeathReason.ByCustomReason(Player.name + " was dissolved by holy powers"), hurt, 0, false);
                 }
             }
             prevLife = -1;
@@ -495,7 +497,7 @@ namespace Bluemagic
         {
             if (badHeal)
             {
-                prevLife = player.statLife;
+                prevLife = Player.statLife;
             }
         }
 
@@ -503,101 +505,101 @@ namespace Bluemagic
         {
             int halfWidth = PuritySpirit.PuritySpirit.arenaWidth / 2;
             int halfHeight = PuritySpirit.PuritySpirit.arenaHeight / 2;
-            Vector2 newPosition = player.position;
-            if (player.position.X <= npc.Center.X - halfWidth)
+            Vector2 newPosition = Player.position;
+            if (Player.position.X <= npc.Center.X - halfWidth)
             {
-                newPosition.X = npc.Center.X + halfWidth - player.width - 1;
-                while (Collision.SolidCollision(newPosition, player.width, player.height))
+                newPosition.X = npc.Center.X + halfWidth - Player.width - 1;
+                while (Collision.SolidCollision(newPosition, Player.width, Player.height))
                 {
                     newPosition.X -= 16f;
                 }
             }
-            else if (player.position.X + player.width >= npc.Center.X + halfWidth)
+            else if (Player.position.X + Player.width >= npc.Center.X + halfWidth)
             {
                 newPosition.X = npc.Center.X - halfWidth + 1;
-                while (Collision.SolidCollision(newPosition, player.width, player.height))
+                while (Collision.SolidCollision(newPosition, Player.width, Player.height))
                 {
                     newPosition.X += 16f;
                 }
             }
-            else if (player.position.Y <= npc.Center.Y - halfHeight)
+            else if (Player.position.Y <= npc.Center.Y - halfHeight)
             {
-                newPosition.Y = npc.Center.Y + halfHeight - player.height - 1;
-                while (Collision.SolidCollision(newPosition, player.width, player.height))
+                newPosition.Y = npc.Center.Y + halfHeight - Player.height - 1;
+                while (Collision.SolidCollision(newPosition, Player.width, Player.height))
                 {
                     newPosition.Y -= 16f;
                 }
             }
-            else if (player.position.Y + player.height >= npc.Center.Y + halfHeight)
+            else if (Player.position.Y + Player.height >= npc.Center.Y + halfHeight)
             {
                 newPosition.Y = npc.Center.Y - halfHeight + 1;
-                while (Collision.SolidCollision(newPosition, player.width, player.height))
+                while (Collision.SolidCollision(newPosition, Player.width, Player.height))
                 {
                     newPosition.Y += 16f;
                 }
             }
-            if (newPosition != player.position)
+            if (newPosition != Player.position)
             {
-                player.Teleport(newPosition, 1, 0);
-                NetMessage.SendData(65, -1, -1, null, 0, player.whoAmI, newPosition.X, newPosition.Y, 1, 0, 0);
+                Player.Teleport(newPosition, 1, 0);
+                NetMessage.SendData(65, -1, -1, null, 0, Player.whoAmI, newPosition.X, newPosition.Y, 1, 0, 0);
                 PuritySpiritDebuff();
             }
         }
 
         internal void TerraSpiritBarrier(NPC npc)
         {
-            Vector2 offset = player.position - lastPos;
+            Vector2 offset = Player.position - lastPos;
             if (offset.Length() > 32f)
             {
                 offset.Normalize();
                 offset *= 32f;
-                player.position = lastPos + offset;
+                Player.position = lastPos + offset;
             }
             int halfWidth = TerraSpirit.TerraSpirit.arenaWidth / 2;
             int halfHeight = TerraSpirit.TerraSpirit.arenaHeight / 2;
-            bool spikes = npc.type == mod.NPCType("TerraSpirit2");
-            if (player.position.X <= npc.Center.X - halfWidth)
+            bool spikes = npc.type == Mod.Find<ModNPC>("TerraSpirit2").Type;
+            if (Player.position.X <= npc.Center.X - halfWidth)
             {
-                player.position.X = npc.Center.X - halfWidth;
-                if (player.velocity.X < 0f)
+                Player.position.X = npc.Center.X - halfWidth;
+                if (Player.velocity.X < 0f)
                 {
-                    player.velocity.X = 0f;
+                    Player.velocity.X = 0f;
                 }
                 if (spikes)
                 {
                     TerraKill();
                 }
             }
-            else if (player.position.X + player.width >= npc.Center.X + halfWidth)
+            else if (Player.position.X + Player.width >= npc.Center.X + halfWidth)
             {
-                player.position.X = npc.Center.X + halfWidth - player.width;
-                if (player.velocity.X > 0f)
+                Player.position.X = npc.Center.X + halfWidth - Player.width;
+                if (Player.velocity.X > 0f)
                 {
-                    player.velocity.X = 0f;
+                    Player.velocity.X = 0f;
                 }
                 if (spikes)
                 {
                     TerraKill();
                 }
             }
-            if (player.position.Y <= npc.Center.Y - halfHeight)
+            if (Player.position.Y <= npc.Center.Y - halfHeight)
             {
-                player.position.Y = npc.Center.Y - halfHeight;
-                if (player.velocity.Y < 0f)
+                Player.position.Y = npc.Center.Y - halfHeight;
+                if (Player.velocity.Y < 0f)
                 {
-                    player.velocity.Y = 0f;
+                    Player.velocity.Y = 0f;
                 }
                 if (spikes)
                 {
                     TerraKill();
                 }
             }
-            else if (player.position.Y + player.height >= npc.Center.Y + halfHeight)
+            else if (Player.position.Y + Player.height >= npc.Center.Y + halfHeight)
             {
-                player.position.Y = npc.Center.Y + halfHeight - player.height;
-                if (player.velocity.Y > 0f)
+                Player.position.Y = npc.Center.Y + halfHeight - Player.height;
+                if (Player.velocity.Y > 0f)
                 {
-                    player.velocity.Y = 0f;
+                    Player.velocity.Y = 0f;
                 }
                 if (spikes)
                 {
@@ -608,45 +610,45 @@ namespace Bluemagic
 
         internal void BlushieBarrier()
         {
-            Vector2 offset = player.position - lastPos;
+            Vector2 offset = Player.position - lastPos;
             if (offset.Length() > 32f)
             {
                 offset.Normalize();
                 offset *= 32f;
-                player.position = lastPos + offset;
+                Player.position = lastPos + offset;
             }
             Vector2 origin = BlushieBoss.BlushieBoss.Origin;
             float arenaSize = BlushieBoss.BlushieBoss.ArenaSize;
-            if (player.position.X <= origin.X - arenaSize)
+            if (Player.position.X <= origin.X - arenaSize)
             {
-                player.position.X = origin.X - arenaSize;
-                if (player.velocity.X < 0f)
+                Player.position.X = origin.X - arenaSize;
+                if (Player.velocity.X < 0f)
                 {
-                    player.velocity.X = 0f;
+                    Player.velocity.X = 0f;
                 }
             }
-            else if (player.position.X + player.width >= origin.X + arenaSize)
+            else if (Player.position.X + Player.width >= origin.X + arenaSize)
             {
-                player.position.X = origin.X + arenaSize - player.width;
-                if (player.velocity.X > 0f)
+                Player.position.X = origin.X + arenaSize - Player.width;
+                if (Player.velocity.X > 0f)
                 {
-                    player.velocity.X = 0f;
+                    Player.velocity.X = 0f;
                 }
             }
-            if (player.position.Y <= origin.Y - arenaSize)
+            if (Player.position.Y <= origin.Y - arenaSize)
             {
-                player.position.Y = origin.Y - arenaSize;
-                if (player.velocity.Y < 0f)
+                Player.position.Y = origin.Y - arenaSize;
+                if (Player.velocity.Y < 0f)
                 {
-                    player.velocity.Y = 0f;
+                    Player.velocity.Y = 0f;
                 }
             }
-            else if (player.position.Y + player.height >= origin.Y + arenaSize)
+            else if (Player.position.Y + Player.height >= origin.Y + arenaSize)
             {
-                player.position.Y = origin.Y + arenaSize - player.height;
-                if (player.velocity.Y > 0f)
+                Player.position.Y = origin.Y + arenaSize - Player.height;
+                if (Player.velocity.Y > 0f)
                 {
-                    player.velocity.Y = 0f;
+                    Player.velocity.Y = 0f;
                 }
             }
         }
@@ -688,9 +690,9 @@ namespace Bluemagic
                     {
                         buffTime = buffTime * 2 / 3;
                     }
-                    if (!player.buffImmune[buffType])
+                    if (!Player.buffImmune[buffType])
                     {
-                        player.AddBuff(buffType, buffTime);
+                        Player.AddBuff(buffType, buffTime);
                         return;
                     }
                 }
@@ -702,17 +704,17 @@ namespace Bluemagic
                 {
                     buffTime = 1200;
                 }
-                player.AddBuff(mod.BuffType("Undead"), buffTime, false);
+                Player.AddBuff(Mod.Find<ModBuff>("Undead").Type, buffTime, false);
             }
             for (int k = 0; k < 25; k++)
             {
-                Dust.NewDust(player.position, player.width, player.height, mod.DustType("Negative"), 0f, -1f, 0, default(Color), 2f);
+                Dust.NewDust(Player.position, Player.width, Player.height, Mod.Find<ModDust>("Negative").Type, 0f, -1f, 0, default(Color), 2f);
             }
         }
 
         private void ChaosSpiritWarning(NPC npc)
         {
-            float distance = Vector2.Distance(player.Center, npc.Center);
+            float distance = Vector2.Distance(Player.Center, npc.Center);
             if (distance > ChaosSpirit.ChaosSpirit.killRadius)
             {
                 ChaosKill();
@@ -733,11 +735,11 @@ namespace Bluemagic
 
         public void ChaosKill()
         {
-            int damage = 100 * player.statLifeMax2;
-            CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), CombatText.DamagedFriendly, damage.ToString(), true, false);
-            if (player.whoAmI == Main.myPlayer)
+            int damage = 100 * Player.statLifeMax2;
+            CombatText.NewText(new Rectangle((int)Player.position.X, (int)Player.position.Y, Player.width, Player.height), CombatText.DamagedFriendly, damage.ToString(), true, false);
+            if (Player.whoAmI == Main.myPlayer)
             {
-                player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " was crushed by chaotic pressure!"), damage, 0, false);
+                Player.KillMe(PlayerDeathReason.ByCustomReason(Player.name + " was crushed by chaotic pressure!"), damage, 0, false);
             }
         }
 
@@ -747,7 +749,7 @@ namespace Bluemagic
             {
                 Nullify();
             }
-            if (BlushieBoss.BlushieBoss.Players[player.whoAmI])
+            if (BlushieBoss.BlushieBoss.Players[Player.whoAmI])
             {
                 noGodmode = true;
             }
@@ -780,12 +782,12 @@ namespace Bluemagic
             elementShieldPos %= 300;
             if (saltLamp)
             {
-                player.statDefense += 4;
+                Player.statDefense += 4;
             }
-            chaosStats.Update(player);
+            chaosStats.Update(Player);
             if (Main.expertMode)
             {
-                cataclysmStats.Update(player);
+                cataclysmStats.Update(Player);
             }
         }
 
@@ -804,9 +806,10 @@ namespace Bluemagic
                     {
                         break;
                     }
-                    if (player.buffType[k] > 0 && player.buffTime[k] > 0 && Main.debuff[player.buffType[k]] && BuffLoader.CanBeCleared(player.buffType[k]) && !buffImmuneBlacklist.Contains(player.buffType[k]))
+                    if (Player.buffType[k] > 0 && Player.buffTime[k] > 0 && Main.debuff[Player.buffType[k]] && !BuffID.Sets.NurseCannotRemoveDebuff[Player.buffType[k]]/*BuffLoader.CanBeCleared(Player.buffType[k])*//* tModPorter Note: Removed. Use !BuffID.Sets.NurseCannotRemoveDebuff instead */ && !buffImmuneBlacklist.Contains(Player.buffType[k]))
                     {
-                        buffImmuneCounter[player.buffType[k]] = 600;
+                        //Check back for issues later
+                        buffImmuneCounter[Player.buffType[k]] = 600;
                         puriumShieldCharge -= buffImmuneCost;
                     }
                 }
@@ -814,11 +817,11 @@ namespace Bluemagic
                 {
                     if (buffImmuneCounter[k] > 0)
                     {
-                        player.buffImmune[k] = true;
+                        Player.buffImmune[k] = true;
                         buffImmuneCounter[k]--;
                     }
                 }
-                player.endurance += PuriumShieldEndurance();
+                Player.endurance += PuriumShieldEndurance();
             }
             CheckBadHeal();
             if (terraImmune > 0)
@@ -832,12 +835,12 @@ namespace Bluemagic
             if (terraKill > 0)
             {
                 terraKill--;
-                player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " was torn apart by the force of Terraria!"), player.statLifeMax2 * 100, 0, false);
+                Player.KillMe(PlayerDeathReason.ByCustomReason(Player.name + " was torn apart by the force of Terraria!"), Player.statLifeMax2 * 100, 0, false);
             }
-            origHealth = player.statLifeMax2;
+            origHealth = Player.statLifeMax2;
             if (blushieHealth > 0f)
             {
-                player.statLifeMax2 = (int)(blushieHealth * player.statLifeMax2);
+                Player.statLifeMax2 = (int)(blushieHealth * Player.statLifeMax2);
             }
         }
 
@@ -869,42 +872,42 @@ namespace Bluemagic
         {
             if (liquified > 0)
             {
-                if (player.velocity.Y == 0 || player.sliding)
+                if (Player.velocity.Y == 0 || Player.sliding)
                 {
-                    if (player.velocity.X != 0f)
+                    if (Player.velocity.X != 0f)
                     {
-                        player.velocity.X *= 0.8f;
-                        if (player.velocity.X < 0.1f && player.velocity.X > -0.1f)
+                        Player.velocity.X *= 0.8f;
+                        if (Player.velocity.X < 0.1f && Player.velocity.X > -0.1f)
                         {
-                            player.velocity.X = 0f;
+                            Player.velocity.X = 0f;
                         }
                         transformFrameCounter++;
                     }
                 }
-                else if (player.wet)
+                else if (Player.wet)
                 {
-                    if (player.controlLeft)
+                    if (Player.controlLeft)
                     {
-                        player.velocity.X = -4f;
+                        Player.velocity.X = -4f;
                     }
-                    else if (player.controlRight)
+                    else if (Player.controlRight)
                     {
-                        player.velocity.X = 4f;
+                        Player.velocity.X = 4f;
                     }
-                    if (player.controlJump)
+                    if (Player.controlJump)
                     {
-                        player.velocity.Y = -4f;
+                        Player.velocity.Y = -4f;
                     }
                 }
                 else
                 {
-                    if (player.velocity.X > 0.1f)
+                    if (Player.velocity.X > 0.1f)
                     {
-                        player.velocity.X = 4f;
+                        Player.velocity.X = 4f;
                     }
-                    if (player.velocity.X < -0.1f)
+                    if (Player.velocity.X < -0.1f)
                     {
-                        player.velocity.X = -4f;
+                        Player.velocity.X = -4f;
                     }
                 }
                 transformFrameCounter++;
@@ -916,40 +919,40 @@ namespace Bluemagic
         {
             if (purityShieldMount)
             {
-                if (player.controlLeft)
+                if (Player.controlLeft)
                 {
-                    player.velocity.X = -Mounts.PurityShield.speed;
-                    player.direction = -1;
+                    Player.velocity.X = -Mounts.PurityShield.speed;
+                    Player.direction = -1;
                 }
-                else if (player.controlRight)
+                else if (Player.controlRight)
                 {
-                    player.velocity.X = Mounts.PurityShield.speed;
-                    player.direction = 1;
+                    Player.velocity.X = Mounts.PurityShield.speed;
+                    Player.direction = 1;
                 }
                 else
                 {
-                    player.velocity.X = 0f;
+                    Player.velocity.X = 0f;
                 }
-                if (player.controlUp)
+                if (Player.controlUp)
                 {
-                    player.velocity.Y = -Mounts.PurityShield.speed;
+                    Player.velocity.Y = -Mounts.PurityShield.speed;
                 }
-                else if (player.controlDown)
+                else if (Player.controlDown)
                 {
-                    player.velocity.Y = Mounts.PurityShield.speed;
-                    Vector2 test = Collision.TileCollision(player.position, player.velocity, player.width, player.height, true, false, (int)player.gravDir);
+                    Player.velocity.Y = Mounts.PurityShield.speed;
+                    Vector2 test = Collision.TileCollision(Player.position, Player.velocity, Player.width, Player.height, true, false, (int)Player.gravDir);
                     if (test.Y == 0f)
                     {
-                        player.velocity.Y = 0.5f;
+                        Player.velocity.Y = 0.5f;
                     }
                 }
                 else
                 {
-                    player.velocity.Y = 0f;
+                    Player.velocity.Y = 0f;
                 }
-                if (player.controlJump)
+                if (Player.controlJump)
                 {
-                    player.velocity *= 0.5f;
+                    Player.velocity *= 0.5f;
                 }
             }
         }
@@ -965,17 +968,17 @@ namespace Bluemagic
             }
             if (purityShieldMount)
             {
-                player.hairFrame.Y = 5 * player.hairFrame.Height;
-                player.headFrame.Y = 5 * player.headFrame.Height;
-                player.legFrame.Y = 5 * player.legFrame.Height;
+                Player.hairFrame.Y = 5 * Player.hairFrame.Height;
+                Player.headFrame.Y = 5 * Player.headFrame.Height;
+                Player.legFrame.Y = 5 * Player.legFrame.Height;
             }
         }
 
         public override void FrameEffects()
         {
-            if (player.inventory[player.selectedItem].type == mod.ItemType("DarkLightningPack"))
+            if (Player.inventory[Player.selectedItem].type == Mod.Find<ModItem>("DarkLightningPack").Type)
             {
-                player.back = mod.GetAccessorySlot("DarkLightningPack_Back", EquipType.Back);
+                Player.back = EquipLoader.GetEquipSlot(Mod, "DarkLightningPack_Back", EquipType.Back);
             }
             if (IsTransformed())
             {
@@ -992,20 +995,20 @@ namespace Bluemagic
         {
             bool saveNullified = this.nullified;
             int saveLiquified = this.liquified;
-            player.ResetEffects();
-            player.head = -1;
-            player.body = -1;
-            player.legs = -1;
-            player.handon = -1;
-            player.handoff = -1;
-            player.back = -1;
-            player.front = -1;
-            player.shoe = -1;
-            player.waist = -1;
-            player.shield = -1;
-            player.neck = -1;
-            player.face = -1;
-            player.balloon = -1;
+            Player.ResetEffects();
+            Player.head = -1;
+            Player.body = -1;
+            Player.legs = -1;
+            Player.handon = -1;
+            Player.handoff = -1;
+            Player.back = -1;
+            Player.front = -1;
+            Player.shoe = -1;
+            Player.waist = -1;
+            Player.shield = -1;
+            Player.neck = -1;
+            Player.face = -1;
+            Player.balloon = -1;
             this.nullified = saveNullified;
             if (!this.nullified)
             {
@@ -1027,27 +1030,26 @@ namespace Bluemagic
         {
             if (npc.type == NPCID.DungeonSpirit && Main.rand.Next(4) == 0)
             {
-                player.AddBuff(mod.BuffType("EtherealFlames"), Main.rand.Next(120, 180), true);
+                Player.AddBuff(Mod.Find<ModBuff>("EtherealFlames").Type, Main.rand.Next(120, 180), true);
             }
         }
 
-        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit,
-            ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
         {
             if (liquified != 0)
             {
                 genGore = false;
-                for (int k = 0; k < damage / (double)player.statLifeMax2 * 100.0; k++)
+                for (int k = 0; k < damage / (double)Player.statLifeMax2 * 100.0; k++)
                 {
                     Color color = new Color(0, 220, 40, 100);
                     if (liquified == 2)
                     {
                         color = new Color(0, 80, 255, 100);
                     }
-                    Dust.NewDust(player.position, player.width, player.height, 4, hitDirection, -1f, 175, color, 1f);
+                    Dust.NewDust(Player.position, Player.width, Player.height, 4, hitDirection, -1f, 175, color, 1f);
                 }
                 playSound = false;
-                Main.PlaySound(3, (int)player.position.X, (int)player.position.Y, 1);
+                SoundEngine.PlaySound(SoundID.NPCHit1, Player.position);
                 int choice = Main.rand.Next(3);
                 string deathText;
                 if (choice == 0)
@@ -1062,19 +1064,19 @@ namespace Bluemagic
                 {
                     deathText = " was not a very good slime.";
                 }
-                damageSource = PlayerDeathReason.ByCustomReason(player.name + deathText);
+                damageSource = PlayerDeathReason.ByCustomReason(Player.name + deathText);
             }
             if (constantDamage > 0 || percentDamage > 0f)
             {
-                int damageFromPercent = (int)(player.statLifeMax2 * percentDamage);
+                int damageFromPercent = (int)(Player.statLifeMax2 * percentDamage);
                 damage = Math.Max(constantDamage, damageFromPercent);
                 if (chaosDefense)
                 {
                     double cap = Main.expertMode ? 75.0 : 50.0;
-                    int reduction = (int)(cap * (1.0 - Math.Exp(-player.statDefense / 150.0)));
+                    int reduction = (int)(cap * (1.0 - Math.Exp(-Player.statDefense / 150.0)));
                     if (reduction < 0)
                     {
-                        reduction = player.statDefense / 2;
+                        reduction = Player.statDefense / 2;
                     }
                     damage -= reduction;
                     if (damage < 0)
@@ -1090,7 +1092,7 @@ namespace Bluemagic
                 {
                     defenseEffect *= 1.5f;
                 }
-                damage -= (int)(player.statDefense * defenseEffect);
+                damage -= (int)(Player.statDefense * defenseEffect);
                 if (damage < 0)
                 {
                     damage = 1;
@@ -1109,7 +1111,7 @@ namespace Bluemagic
             return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
         }
 
-        public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+        public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
         {
             if (elementShield && damage > 1.0)
             {
@@ -1117,9 +1119,9 @@ namespace Bluemagic
                 {
                     int k;
                     bool flag = false;
-                    for (k = 3; k < 8 + player.extraAccessorySlots; k++)
+                    for (k = 3; k < 8 + Player.extraAccessorySlots; k++)
                     {
-                        if (player.armor[k].type == mod.ItemType("SixColorShield"))
+                        if (Player.armor[k].type == Mod.Find<ModItem>("SixColorShield").Type)
                         {
                             flag = true;
                             break;
@@ -1127,7 +1129,7 @@ namespace Bluemagic
                     }
                     if (flag)
                     {
-                        Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, mod.ProjectileType("ElementShield"), player.GetWeaponDamage(player.armor[k]), player.GetWeaponKnockback(player.armor[k], 2f), player.whoAmI, elementShields++);
+                        Projectile.NewProjectile(Player.Center.X, Player.Center.Y, 0f, 0f, Mod.Find<ModProjectile>("ElementShield").Type, Player.GetWeaponDamage(Player.armor[k]), Player.GetWeaponKnockback(Player.armor[k], 2f), Player.whoAmI, elementShields++);
                     }
                 }
                 elementShieldTimer = 600;
@@ -1136,17 +1138,17 @@ namespace Bluemagic
             {
                 for (int l = 0; l < 3; l++)
                 {
-                    Vector2 crystalPos = player.Center + new Vector2(Main.rand.Next(-400, 401), -Main.rand.Next(500, 800));
-                    Vector2 offset = player.Center - crystalPos;
+                    Vector2 crystalPos = Player.Center + new Vector2(Main.rand.Next(-400, 401), -Main.rand.Next(500, 800));
+                    Vector2 offset = Player.Center - crystalPos;
                     offset.X += (float)Main.rand.Next(-50, 51);
                     offset *= 28f / offset.Length();
-                    int proj = Projectile.NewProjectile(crystalPos.X, crystalPos.Y, offset.X, offset.Y, mod.ProjectileType("CrystalStar"), 100, 6f, player.whoAmI, 0f, 0f);
-                    Main.projectile[proj].ai[1] = player.position.Y;
+                    int proj = Projectile.NewProjectile(crystalPos.X, crystalPos.Y, offset.X, offset.Y, Mod.Find<ModProjectile>("CrystalStar").Type, 100, 6f, Player.whoAmI, 0f, 0f);
+                    Main.projectile[proj].ai[1] = Player.position.Y;
                 }
             }
             if (puriumShieldChargeMax > 0f)
             {
-                float effectiveEndurance = player.endurance;
+                float effectiveEndurance = Player.endurance;
                 if (effectiveEndurance >= 0.995f)
                 {
                     effectiveEndurance = 0.995f;
@@ -1164,12 +1166,12 @@ namespace Bluemagic
                 for (int k = 0; k < 200; k++)
                 {
                     NPC npc = Main.npc[k];
-                    if (npc.active && npc.type == mod.NPCType("PuritySpirit"))
+                    if (npc.active && npc.type == Mod.Find<ModNPC>("PuritySpirit").Type)
                     {
-                        PuritySpirit.PuritySpirit modNPC = (PuritySpirit.PuritySpirit)npc.modNPC;
+                        PuritySpirit.PuritySpirit modNPC = (PuritySpirit.PuritySpirit)npc.ModNPC;
                         if (modNPC.attack >= 0)
                         {
-                            double proportion = damage / player.statLifeMax2;
+                            double proportion = damage / Player.statLifeMax2;
                             if (proportion > 1.0)
                             {
                                 proportion = 1.0;
@@ -1193,7 +1195,7 @@ namespace Bluemagic
             }
         }
 
-        public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+        public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
         {
             if (!pvp && crystalCloak)
             {
@@ -1206,15 +1208,15 @@ namespace Bluemagic
                 {
                     immuneTime = 80;
                 }
-                if (player.immuneTime == immuneTime)
+                if (Player.immuneTime == immuneTime)
                 {
-                    player.immuneTime += 20;
+                    Player.immuneTime += 20;
                 }
-                for (int k = 0; k < player.hurtCooldowns.Length; k++)
+                for (int k = 0; k < Player.hurtCooldowns.Length; k++)
                 {
-                    if (player.hurtCooldowns[k] == immuneTime)
+                    if (Player.hurtCooldowns[k] == immuneTime)
                     {
-                        player.hurtCooldowns[k] += 20;
+                        Player.hurtCooldowns[k] += 20;
                     }
                 }
             }
@@ -1224,26 +1226,26 @@ namespace Bluemagic
         {
             if (godmode)
             {
-                player.statLife = player.statLifeMax2;
+                Player.statLife = Player.statLifeMax2;
                 return false;
             }
             if (puriumShieldChargeMax > 0f && puriumShieldCharge >= reviveCost)
             {
                 puriumShieldCharge -= reviveCost;
-                if (player.statLife < 1)
+                if (Player.statLife < 1)
                 {
-                    player.statLife = 1;
+                    Player.statLife = 1;
                 }
                 StartBadHeal();
-                player.immune = true;
-                player.immuneTime = player.longInvince ? 180 : 120;
+                Player.immune = true;
+                Player.immuneTime = Player.longInvince ? 180 : 120;
                 if (crystalCloak)
                 {
-                    player.immuneTime += 60;
+                    Player.immuneTime += 60;
                 }
-                for (int k = 0; k < player.hurtCooldowns.Length; k++)
+                for (int k = 0; k < Player.hurtCooldowns.Length; k++)
                 {
-                    player.hurtCooldowns[k] = player.longInvince ? 180 : 120;
+                    Player.hurtCooldowns[k] = Player.longInvince ? 180 : 120;
                 }
                 return false;
             }
@@ -1252,26 +1254,26 @@ namespace Bluemagic
                 heroLives--;
                 if (Main.netMode == 1)
                 {
-                    ModPacket packet = mod.GetPacket();
+                    ModPacket packet = Mod.GetPacket();
                     packet.Write((byte)MessageType.HeroLives);
-                    packet.Write(player.whoAmI);
+                    packet.Write(Player.whoAmI);
                     packet.Write(heroLives);
                     packet.Send();
                 }
-                player.statLife = player.statLifeMax2;
-                player.HealEffect(player.statLifeMax2);
+                Player.statLife = Player.statLifeMax2;
+                Player.HealEffect(Player.statLifeMax2);
                 StartBadHeal();
-                player.immune = true;
-                player.immuneTime = player.longInvince ? 180 : 120;
+                Player.immune = true;
+                Player.immuneTime = Player.longInvince ? 180 : 120;
                 if (crystalCloak)
                 {
-                    player.immuneTime += 60;
+                    Player.immuneTime += 60;
                 }
-                for (int k = 0; k < player.hurtCooldowns.Length; k++)
+                for (int k = 0; k < Player.hurtCooldowns.Length; k++)
                 {
-                    player.hurtCooldowns[k] = player.longInvince ? 180 : 120;
+                    Player.hurtCooldowns[k] = Player.longInvince ? 180 : 120;
                 }
-                Main.PlaySound(2, (int)player.position.X, (int)player.position.Y, 29);
+                SoundEngine.PlaySound(SoundID.Item29, Player.position);
                 reviveTime = 60;
                 return false;
             }
@@ -1279,15 +1281,15 @@ namespace Bluemagic
             {
                 if (healHurt > 0)
                 {
-                    damageSource = PlayerDeathReason.ByCustomReason(player.name + " was dissolved by holy powers");
+                    damageSource = PlayerDeathReason.ByCustomReason(Player.name + " was dissolved by holy powers");
                 }
                 else if (chaosPressure > 0)
                 {
-                    damageSource = PlayerDeathReason.ByCustomReason(player.name + " was crushed by chaotic pressure");
+                    damageSource = PlayerDeathReason.ByCustomReason(Player.name + " was crushed by chaotic pressure");
                 }
                 else if (blushieImmune > 0)
                 {
-                    damageSource = PlayerDeathReason.ByCustomReason(player.name + " succumbed to the might of the blushie!");
+                    damageSource = PlayerDeathReason.ByCustomReason(Player.name + " succumbed to the might of the blushie!");
                 }
             }
             return true;
@@ -1296,64 +1298,64 @@ namespace Bluemagic
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
         {
             Item salt = new Item();
-            salt.SetDefaults(mod.ItemType("Salt"));
-            int npc = NPC.FindFirstNPC(mod.NPCType("Abomination"));
+            salt.SetDefaults(Mod.Find<ModItem>("Salt").Type);
+            int npc = NPC.FindFirstNPC(Mod.Find<ModNPC>("Abomination").Type);
             if (npc >= 0)
             {
                 NPC ent = Main.npc[npc];
                 salt.stack = 25 + 25 * (ent.lifeMax - ent.life) / ent.lifeMax;
-                player.GetItem(player.whoAmI, salt);
+                Player.GetItem(Player.whoAmI, salt);
             }
-            int count = NPC.CountNPCS(mod.NPCType("CaptiveElement2"));
+            int count = NPC.CountNPCS(Mod.Find<ModNPC>("CaptiveElement2").Type);
             if (count > 0)
             {
                 salt.stack = 50 + 5 * (5 - count);
-                player.GetItem(player.whoAmI, salt);
+                Player.GetItem(Player.whoAmI, salt);
             }
-            npc = NPC.FindFirstNPC(mod.NPCType("Phantom"));
+            npc = NPC.FindFirstNPC(Mod.Find<ModNPC>("Phantom").Type);
             if (npc >= 0)
             {
                 NPC ent = Main.npc[npc];
                 salt.stack = 50 * (ent.lifeMax - ent.life) / ent.lifeMax;
-                player.GetItem(player.whoAmI, salt);
+                Player.GetItem(Player.whoAmI, salt);
             }
-            npc = NPC.FindFirstNPC(mod.NPCType("PuritySpirit"));
+            npc = NPC.FindFirstNPC(Mod.Find<ModNPC>("PuritySpirit").Type);
             if (npc >= 0)
             {
                 NPC ent = Main.npc[npc];
                 salt.stack = 50 + 50 * (ent.lifeMax - ent.life) / ent.lifeMax;
-                player.GetItem(player.whoAmI, salt);
+                Player.GetItem(Player.whoAmI, salt);
             }
-            npc = NPC.FindFirstNPC(mod.NPCType("ChaosSpirit"));
+            npc = NPC.FindFirstNPC(Mod.Find<ModNPC>("ChaosSpirit").Type);
             if (npc >= 0)
             {
                 NPC ent = Main.npc[npc];
                 salt.stack = 50 + 25 * (ent.lifeMax - ent.life) / ent.lifeMax;
-                player.GetItem(player.whoAmI, salt);
+                Player.GetItem(Player.whoAmI, salt);
             }
-            npc = NPC.FindFirstNPC(mod.NPCType("ChaosSpirit2"));
+            npc = NPC.FindFirstNPC(Mod.Find<ModNPC>("ChaosSpirit2").Type);
             if (npc >= 0)
             {
                 NPC ent = Main.npc[npc];
                 salt.stack = 75 + 50 * (ent.lifeMax - ent.life) / ent.lifeMax;
-                player.GetItem(player.whoAmI, salt);
+                Player.GetItem(Player.whoAmI, salt);
             }
-            npc = NPC.FindFirstNPC(mod.NPCType("ChaosSpirit3"));
+            npc = NPC.FindFirstNPC(Mod.Find<ModNPC>("ChaosSpirit3").Type);
             if (npc >= 0)
             {
                 NPC ent = Main.npc[npc];
                 salt.stack = 125 + 25 * (ent.lifeMax - ent.life) / ent.lifeMax;
-                player.GetItem(player.whoAmI, salt);
+                Player.GetItem(Player.whoAmI, salt);
             }
-            if (NPC.AnyNPCs(mod.NPCType("TerraSpirit")))
+            if (NPC.AnyNPCs(Mod.Find<ModNPC>("TerraSpirit").Type))
             {
-                salt.SetDefaults(mod.ItemType("PureSalt"));
+                salt.SetDefaults(Mod.Find<ModItem>("PureSalt").Type);
                 salt.stack = 2 * BluemagicWorld.terraDeaths;
                 if (salt.stack > 999)
                 {
                     salt.stack = 999;
                 }
-                player.GetItem(player.whoAmI, salt);
+                Player.GetItem(Player.whoAmI, salt);
             }
         }
 
@@ -1363,8 +1365,8 @@ namespace Bluemagic
             {
                 return;
             }
-            int damage = 100 * player.statLifeMax2;
-            CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), CombatText.DamagedFriendly, damage.ToString(), true, false);
+            int damage = 100 * Player.statLifeMax2;
+            CombatText.NewText(new Rectangle((int)Player.position.X, (int)Player.position.Y, Player.width, Player.height), CombatText.DamagedFriendly, damage.ToString(), true, false);
             terraLives--;
             if (terraLives == 0 && Bluemagic.testing)
             {
@@ -1373,9 +1375,9 @@ namespace Bluemagic
             }
             if (Main.netMode == 1)
             {
-                ModPacket packet = mod.GetPacket();
+                ModPacket packet = Mod.GetPacket();
                 packet.Write((byte)MessageType.TerraLives);
-                packet.Write(player.whoAmI);
+                packet.Write(Player.whoAmI);
                 packet.Write(terraLives);
                 packet.Send();
             }
@@ -1384,36 +1386,36 @@ namespace Bluemagic
                 string text;
                 if (terraLives == 1)
                 {
-                    text = Language.GetTextValue("Mods.Bluemagic.LifeLeft", player.name);
+                    text = Language.GetTextValue("Mods.Bluemagic.LifeLeft", Player.name);
                 }
                 else
                 {
-                    text = Language.GetTextValue("Mods.Bluemagic.LivesLeft", player.name, terraLives);
+                    text = Language.GetTextValue("Mods.Bluemagic.LivesLeft", Player.name, terraLives);
                 }
                 Main.NewText(text, 255, 25, 25);
             }
             if (terraLives > 0)
             {
-                player.statLife = player.statLifeMax2;
-                player.HealEffect(player.statLifeMax2);
+                Player.statLife = Player.statLifeMax2;
+                Player.HealEffect(Player.statLifeMax2);
                 terraImmune = 60;
-                if (!player.immune)
+                if (!Player.immune)
                 {
-                    player.immune = true;
-                    player.immuneTime = 60;
+                    Player.immune = true;
+                    Player.immuneTime = 60;
                 }
             }
-            else if (Main.myPlayer == player.whoAmI)
+            else if (Main.myPlayer == Player.whoAmI)
             {
                 terraKill = 10;
                 for (int k = 0; k < 10; k++)
                 {
-                    if (player.dead)
+                    if (Player.dead)
                     {
                         terraKill = 0;
                         break;
                     }
-                    player.KillMe(PlayerDeathReason.ByCustomReason(player.name + " was torn apart by the force of Terraria!"), player.statLifeMax2 * 100, 0, false);
+                    Player.KillMe(PlayerDeathReason.ByCustomReason(Player.name + " was torn apart by the force of Terraria!"), Player.statLifeMax2 * 100, 0, false);
                 }
             }
         }
@@ -1424,69 +1426,69 @@ namespace Bluemagic
             {
                 return;
             }
-            int oldHealth = player.statLife;
+            int oldHealth = Player.statLife;
             blushieHealth -= bulletDamage;
-            player.statLife = (int)(player.statLifeMax2 * blushieHealth);
-            int constDamage = (int)((200f - player.statDefense / 2f) * (1f - player.endurance));
+            Player.statLife = (int)(Player.statLifeMax2 * blushieHealth);
+            int constDamage = (int)((200f - Player.statDefense / 2f) * (1f - Player.endurance));
             if (constDamage < 1)
             {
                 constDamage = 1;
             }
-            if (player.statLife > oldHealth - constDamage)
+            if (Player.statLife > oldHealth - constDamage)
             {
-                player.statLife = oldHealth - constDamage;
+                Player.statLife = oldHealth - constDamage;
             }
-            int damage = oldHealth - player.statLife;
-            CombatText.NewText(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), CombatText.DamagedFriendly, damage.ToString(), true, false);
-            if (player.Male)
+            int damage = oldHealth - Player.statLife;
+            CombatText.NewText(new Rectangle((int)Player.position.X, (int)Player.position.Y, Player.width, Player.height), CombatText.DamagedFriendly, damage.ToString(), true, false);
+            if (Player.Male)
             {
-                Main.PlaySound(1, (int)player.position.X, (int)player.position.Y, 1, 1f, 0f);
+                SoundEngine.PlaySound(SoundID.PlayerHit, Player.position);
             }
             else
             {
-                Main.PlaySound(20, (int)player.position.X, (int)player.position.Y, 1, 1f, 0f);
+                SoundEngine.PlaySound(SoundID.FemaleHit, Player.position);
             }
-            if (blushieHealth > 0f && player.statLife > 0)
+            if (blushieHealth > 0f && Player.statLife > 0)
             {
                 blushieImmune = 60;
-                if (!player.immune)
+                if (!Player.immune)
                 {
-                    player.immune = true;
-                    player.immuneTime = 60;
+                    Player.immune = true;
+                    Player.immuneTime = 60;
                 }
             }
-            else if (Main.myPlayer == player.whoAmI)
+            else if (Main.myPlayer == Player.whoAmI)
             {
                 if (Bluemagic.testing)
                 {
                     Main.NewText("YOU LOSE! Lucky that it's not possible for the dev to defeat herself when testing.");
                     blushieHealth = 0.05f;
-                    player.statLife = 1;
+                    Player.statLife = 1;
                     blushieImmune = 60;
                     return;
                 }
                 bool playSound = true;
                 bool genGore = true;
-                PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(player.name + " succumbed to the might of the blushie!");
-                PlayerHooks.PreKill(player, damage, 0, false, ref playSound, ref genGore, ref damageSource);
-                damageSource = PlayerDeathReason.ByCustomReason(player.name + " succumbed to the might of the blushie!");
-                player.lastDeathPostion = player.Center;
-                player.lastDeathTime = DateTime.Now;
-                player.showLastDeath = true;
+                PlayerDeathReason damageSource = PlayerDeathReason.ByCustomReason(Player.name + " succumbed to the might of the blushie!");
+                PlayerLoader.PreKill(Player, damage, 0, false, ref playSound, ref genGore, ref damageSource);
+                damageSource = PlayerDeathReason.ByCustomReason(Player.name + " succumbed to the might of the blushie!");
+                Player.lastDeathPostion = Player.Center;
+                Player.lastDeathTime = DateTime.Now;
+                Player.showLastDeath = true;
                 bool flag;
-                int coinsOwned = (int)Utils.CoinsCount(out flag, player.inventory, new int[0]);
-                player.lostCoins = coinsOwned;
-                player.lostCoinString = Main.ValueToCoins(player.lostCoins);
+                int coinsOwned = (int)Utils.CoinsCount(out flag, Player.inventory, new int[0]);
+                Player.lostCoins = coinsOwned;
+                Player.lostCoinString = Main.ValueToCoins(Player.lostCoins);
                 Main.mapFullscreen = false;
-                player.trashItem.SetDefaults(0, false);
-                if (player.difficulty == 0)
+                Player.trashItem.SetDefaults(0, false);
+                if (Player.difficulty == 0)
                 {
                     for (int i = 0; i < 59; i++)
                     {
-                        Item item = player.inventory[i];
+                        Item item = Player.inventory[i];
                         if (item.stack > 0 && ((item.type >= 1522 && item.type <= 1527) || item.type == 3643))
                         {
-                            int num = Item.NewItem((int)player.position.X, (int)player.position.Y, player.width, player.height, item.type, 1, false, 0, false, false);
+                            int num = Item.NewItem((int)Player.position.X, (int)Player.position.Y, Player.width, Player.height, item.type, 1, false, 0, false, false);
                             Main.item[num].netDefaults(item.netID);
                             Main.item[num].Prefix(item.prefix);
                             Main.item[num].stack = item.stack;
@@ -1503,81 +1505,81 @@ namespace Bluemagic
                         }
                     }
                 }
-                else if (player.difficulty == 1)
+                else if (Player.difficulty == 1)
                 {
-                    player.DropItems();
+                    Player.DropItems();
                 }
-                else if (player.difficulty == 2)
+                else if (Player.difficulty == 2)
                 {
-                    player.DropItems();
-                    player.KillMeForGood();
+                    Player.DropItems();
+                    Player.KillMeForGood();
                 }
                 if (playSound)
                 {
-                    Main.PlaySound(5, (int)player.position.X, (int)player.position.Y, 1, 1f, 0f);
+                    SoundEngine.PlaySound(SoundID.PlayerKilled, Player.position);
                 }
-                player.headVelocity.Y = (float)Main.rand.Next(-40, -10) * 0.1f;
-                player.bodyVelocity.Y = (float)Main.rand.Next(-40, -10) * 0.1f;
-                player.legVelocity.Y = (float)Main.rand.Next(-40, -10) * 0.1f;
-                player.headVelocity.X = (float)Main.rand.Next(-20, 21) * 0.1f;
-                player.bodyVelocity.X = (float)Main.rand.Next(-20, 21) * 0.1f;
-                player.legVelocity.X = (float)Main.rand.Next(-20, 21) * 0.1f;
-                if (player.stoned || !genGore)
+                Player.headVelocity.Y = (float)Main.rand.Next(-40, -10) * 0.1f;
+                Player.bodyVelocity.Y = (float)Main.rand.Next(-40, -10) * 0.1f;
+                Player.legVelocity.Y = (float)Main.rand.Next(-40, -10) * 0.1f;
+                Player.headVelocity.X = (float)Main.rand.Next(-20, 21) * 0.1f;
+                Player.bodyVelocity.X = (float)Main.rand.Next(-20, 21) * 0.1f;
+                Player.legVelocity.X = (float)Main.rand.Next(-20, 21) * 0.1f;
+                if (Player.stoned || !genGore)
                 {
-                    player.headPosition = Vector2.Zero;
-                    player.bodyPosition = Vector2.Zero;
-                    player.legPosition = Vector2.Zero;
+                    Player.headPosition = Vector2.Zero;
+                    Player.bodyPosition = Vector2.Zero;
+                    Player.legPosition = Vector2.Zero;
                 }
                 if (genGore)
                 {
                     for (int j = 0; j < 100; j++)
                     {
-                        if (player.stoned)
+                        if (Player.stoned)
                         {
-                            Dust.NewDust(player.position, player.width, player.height, 1, 0f, -2f, 0, default(Color), 1f);
+                            Dust.NewDust(Player.position, Player.width, Player.height, 1, 0f, -2f, 0, default(Color), 1f);
                         }
-                        else if (player.frostArmor)
+                        else if (Player.frostArmor)
                         {
-                            int num2 = Dust.NewDust(player.position, player.width, player.height, 135, 0f, -2f, 0, default(Color), 1f);
-                            Main.dust[num2].shader = GameShaders.Armor.GetSecondaryShader(player.ArmorSetDye(), player);
+                            int num2 = Dust.NewDust(Player.position, Player.width, Player.height, 135, 0f, -2f, 0, default(Color), 1f);
+                            Main.dust[num2].shader = GameShaders.Armor.GetSecondaryShader(Player.ArmorSetDye(), Player);
                         }
-                        else if (player.boneArmor)
+                        else if (Player.boneArmor)
                         {
-                            int num3 = Dust.NewDust(player.position, player.width, player.height, 26, 0f, -2f, 0, default(Color), 1f);
-                            Main.dust[num3].shader = GameShaders.Armor.GetSecondaryShader(player.ArmorSetDye(), player);
+                            int num3 = Dust.NewDust(Player.position, Player.width, Player.height, 26, 0f, -2f, 0, default(Color), 1f);
+                            Main.dust[num3].shader = GameShaders.Armor.GetSecondaryShader(Player.ArmorSetDye(), Player);
                         }
                         else
                         {
-                            Dust.NewDust(player.position, player.width, player.height, 5, 0f, -2f, 0, default(Color), 1f);
+                            Dust.NewDust(Player.position, Player.width, Player.height, 5, 0f, -2f, 0, default(Color), 1f);
                         }
                     }
                 }
-                player.mount.Dismount(player);
-                player.dead = true;
-                player.respawnTimer = 600;
+                Player.mount.Dismount(Player);
+                Player.dead = true;
+                Player.respawnTimer = 600;
                 if (Main.expertMode)
                 {
-                    player.respawnTimer = 900;
+                    Player.respawnTimer = 900;
                 }
-                PlayerHooks.Kill(player, damage, 0, false, damageSource);
-                player.immuneAlpha = 0;
-                player.palladiumRegen = false;
-                player.iceBarrier = false;
-                player.crystalLeaf = false;
-                NetworkText deathText = damageSource.GetDeathText(player.name);
+                PlayerLoader.Kill(Player, damage, 0, false, damageSource);
+                Player.immuneAlpha = 0;
+                Player.palladiumRegen = false;
+                Player.iceBarrier = false;
+                Player.crystalLeaf = false;
+                NetworkText deathText = damageSource.GetDeathText(Player.name);
                 if (Main.netMode == 0)
                 {
                     Main.NewText(deathText.ToString(), 225, 25, 25, false);
                 }
                 else if (Main.netMode == 1)
                 {
-                    NetMessage.SendPlayerDeath(player.whoAmI, damageSource, damage, 0, false, -1, -1);
+                    NetMessage.SendPlayerDeath(Player.whoAmI, damageSource, damage, 0, false, -1, -1);
                 }
-                if (player.difficulty == 0)
+                if (Player.difficulty == 0)
                 {
-                    player.DropCoins();
+                    Player.DropCoins();
                 }
-                player.DropTombstone(coinsOwned, deathText, 0);
+                Player.DropTombstone(coinsOwned, deathText, 0);
                 try
                 {
                     WorldGen.saveToonWhilePlaying();
@@ -1590,13 +1592,13 @@ namespace Bluemagic
 
         public override void MeleeEffects(Item item, Rectangle hitbox)
         {
-            if (item.melee && !item.noMelee && !item.noUseGraphic && customMeleeEnchant > 0)
+            if (item.CountsAsClass(DamageClass.Melee) && !item.noMelee && !item.noUseGraphic && customMeleeEnchant > 0)
             {
                 if (customMeleeEnchant == 1)
                 {
                     if (Main.rand.Next(2) == 0)
                     {
-                        int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, mod.DustType("EtherealFlame"), player.velocity.X * 0.2f + player.direction * 3f, player.velocity.Y * 0.2f, 100, default(Color), 2.5f);
+                        int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, Mod.Find<ModDust>("EtherealFlame").Type, Player.velocity.X * 0.2f + Player.direction * 3f, Player.velocity.Y * 0.2f, 100, default(Color), 2.5f);
                         Main.dust[dust].noGravity = true;
                         Main.dust[dust].velocity *= 0.7f;
                         Main.dust[dust].velocity.Y -= 0.5f;
@@ -1606,7 +1608,7 @@ namespace Bluemagic
                 {
                     if (Main.rand.Next(2) == 0)
                     {
-                        int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, 135, player.velocity.X * 0.2f + player.direction * 3f, player.velocity.Y * 0.2f, 100, default(Color), 2.5f);
+                        int dust = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, 135, Player.velocity.X * 0.2f + Player.direction * 3f, Player.velocity.Y * 0.2f, 100, default(Color), 2.5f);
                         Main.dust[dust].noGravity = true;
                         Main.dust[dust].velocity *= 0.7f;
                         Main.dust[dust].velocity.Y -= 0.5f;
@@ -1615,13 +1617,13 @@ namespace Bluemagic
             }
         }
 
-        public override bool ConsumeAmmo(Item weapon, Item ammo)
+        public override bool CanConsumeAmmo(Item weapon, Item ammo)
         {
             if (Main.rand.NextFloat() < ammoCost)
             {
                 return false;
             }
-            return base.ConsumeAmmo(weapon, ammo);
+            return base.CanConsumeAmmo(weapon, ammo);
         }
 
         public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
@@ -1636,7 +1638,7 @@ namespace Bluemagic
         {
             if (customMeleeEnchant == 1)
             {
-                target.AddBuff(mod.BuffType("EtherealFlames"), 60 * Main.rand.Next(3, 7), false);
+                target.AddBuff(Mod.Find<ModBuff>("EtherealFlames").Type, 60 * Main.rand.Next(3, 7), false);
             }
             else if (customMeleeEnchant == 2)
             {
@@ -1658,11 +1660,11 @@ namespace Bluemagic
 
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
-            if (proj.melee && !proj.noEnchantments)
+            if (proj.CountsAsClass(DamageClass.Melee) && !proj.noEnchantments)
             {
                 if (customMeleeEnchant == 1)
                 {
-                    target.AddBuff(mod.BuffType("EtherealFlames"), 60 * Main.rand.Next(3, 7), false);
+                    target.AddBuff(Mod.Find<ModBuff>("EtherealFlames").Type, 60 * Main.rand.Next(3, 7), false);
                 }
                 else if (customMeleeEnchant == 2)
                 {
@@ -1679,7 +1681,7 @@ namespace Bluemagic
         {
             if (customMeleeEnchant == 1)
             {
-                target.AddBuff(mod.BuffType("EtherealFlames"), 60 * Main.rand.Next(3, 7), true);
+                target.AddBuff(Mod.Find<ModBuff>("EtherealFlames").Type, 60 * Main.rand.Next(3, 7), true);
             }
             else if (customMeleeEnchant == 2)
             {
@@ -1693,11 +1695,11 @@ namespace Bluemagic
 
         public override void OnHitPvpWithProj(Projectile proj, Player target, int damage, bool crit)
         {
-            if(proj.melee && !proj.noEnchantments)
+            if(proj.CountsAsClass(DamageClass.Melee) && !proj.noEnchantments)
             {
                 if (customMeleeEnchant == 1)
                 {
-                    target.AddBuff(mod.BuffType("EtherealFlames"), 60 * Main.rand.Next(3, 7), true);
+                    target.AddBuff(Mod.Find<ModBuff>("EtherealFlames").Type, 60 * Main.rand.Next(3, 7), true);
                 }
                 else if (customMeleeEnchant == 2)
                 {
@@ -1719,13 +1721,13 @@ namespace Bluemagic
             }
         }
 
-        public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+        public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
         {
             if (eFlames)
             {
                 if (Main.rand.Next(4) == 0 && drawInfo.shadow == 0f)
                 {
-                    int dust = Dust.NewDust(drawInfo.position - new Vector2(2f, 2f), player.width + 4, player.height + 4, mod.DustType("EtherealFlame"), player.velocity.X * 0.4f, player.velocity.Y * 0.4f, 100, default(Color), 3f);
+                    int dust = Dust.NewDust(drawInfo.Position - new Vector2(2f, 2f), Player.width + 4, Player.height + 4, Mod.Find<ModDust>("EtherealFlame").Type, Player.velocity.X * 0.4f, Player.velocity.Y * 0.4f, 100, default(Color), 3f);
                     Main.dust[dust].noGravity = true;
                     Main.dust[dust].velocity *= 1.8f;
                     Main.dust[dust].velocity.Y -= 0.5f;
@@ -1738,7 +1740,7 @@ namespace Bluemagic
             }
         }
 
-        public static readonly PlayerLayer MiscEffectsBack = new PlayerLayer("Bluemagic", "MiscEffectsBack", PlayerLayer.MiscEffectsBack, delegate(PlayerDrawInfo drawInfo)
+        public static readonly PlayerLayer MiscEffectsBack = new PlayerLayer("Bluemagic", "MiscEffectsBack", PlayerLayer.MiscEffectsBack, delegate(PlayerDrawSet drawInfo)
         {
             if (drawInfo.shadow != 0f)
             {
@@ -1754,13 +1756,13 @@ namespace Bluemagic
             if (modPlayer.reviveTime > 0)
             {
                 Texture2D texture = mod.GetTexture("PuritySpirit/Revive");
-                int drawX = (int)(drawInfo.position.X + drawPlayer.width / 2f - Main.screenPosition.X);
-                int drawY = (int)(drawInfo.position.Y + drawPlayer.height / 4f - 60f + modPlayer.reviveTime - Main.screenPosition.Y);
+                int drawX = (int)(drawInfo.Position.X + drawPlayer.width / 2f - Main.screenPosition.X);
+                int drawY = (int)(drawInfo.Position.Y + drawPlayer.height / 4f - 60f + modPlayer.reviveTime - Main.screenPosition.Y);
                 DrawData data = new DrawData(texture, new Vector2(drawX, drawY), null, Color.White * (modPlayer.reviveTime / 60f), 0f, new Vector2(texture.Width / 2f, texture.Height / 2f), 1f, SpriteEffects.None, 0);
                 Main.playerDrawData.Add(data);
             }
         });
-        public static readonly PlayerLayer MiscEffects = new PlayerLayer("Bluemagic", "MiscEffects", PlayerLayer.MiscEffectsFront, delegate(PlayerDrawInfo drawInfo)
+        public static readonly PlayerLayer MiscEffects = new PlayerLayer("Bluemagic", "MiscEffects", PlayerLayer.MiscEffectsFront, delegate(PlayerDrawSet drawInfo)
         {
             if (drawInfo.shadow != 0f)
             {
@@ -1776,13 +1778,13 @@ namespace Bluemagic
             if (modPlayer.badHeal)
             {
                 Texture2D texture = mod.GetTexture("Buffs/PuritySpirit/Skull");
-                int drawX = (int)(drawInfo.position.X + drawPlayer.width / 2f - Main.screenPosition.X);
-                int drawY = (int)(drawInfo.position.Y - 4f - Main.screenPosition.Y);
-                DrawData data = new DrawData(texture, new Vector2(drawX, drawY), null, Lighting.GetColor((int)((drawInfo.position.X + drawPlayer.width / 2f) / 16f), (int)((drawInfo.position.Y - 4f - texture.Height / 2f) / 16f)), 0f, new Vector2(texture.Width / 2f, texture.Height), 1f, SpriteEffects.None, 0);
+                int drawX = (int)(drawInfo.Position.X + drawPlayer.width / 2f - Main.screenPosition.X);
+                int drawY = (int)(drawInfo.Position.Y - 4f - Main.screenPosition.Y);
+                DrawData data = new DrawData(texture, new Vector2(drawX, drawY), null, Lighting.GetColor((int)((drawInfo.Position.X + drawPlayer.width / 2f) / 16f), (int)((drawInfo.Position.Y - 4f - texture.Height / 2f) / 16f)), 0f, new Vector2(texture.Width / 2f, texture.Height), 1f, SpriteEffects.None, 0);
                 Main.playerDrawData.Add(data);
                 for (int k = 0; k < 2; k++)
                 {
-                    int dust = Dust.NewDust(new Vector2(drawInfo.position.X + drawPlayer.width / 2f - texture.Width / 2f, drawInfo.position.Y - 4f - texture.Height), texture.Width, texture.Height, mod.DustType("Smoke"), 0f, 0f, 0, Color.Black);
+                    int dust = Dust.NewDust(new Vector2(drawInfo.Position.X + drawPlayer.width / 2f - texture.Width / 2f, drawInfo.Position.Y - 4f - texture.Height), texture.Width, texture.Height, mod.Find<ModDust>("Smoke").Type, 0f, 0f, 0, Color.Black);
                     Main.dust[dust].velocity += drawPlayer.velocity * 0.25f;
                     Main.playerDrawDust.Add(dust);
                 }
@@ -1790,8 +1792,8 @@ namespace Bluemagic
             if (modPlayer.puriumShieldChargeMax > 0f && modPlayer.puriumShieldCharge > 0f && !modPlayer.purityShieldMount)
             {
                 Texture2D texture = mod.GetTexture("PuriumShield");
-                int drawX = (int)(drawInfo.position.X + drawPlayer.width / 2f - Main.screenPosition.X);
-                int drawY = (int)(drawInfo.position.Y + drawPlayer.height / 2f - Main.screenPosition.Y);
+                int drawX = (int)(drawInfo.Position.X + drawPlayer.width / 2f - Main.screenPosition.X);
+                int drawY = (int)(drawInfo.Position.Y + drawPlayer.height / 2f - Main.screenPosition.Y);
                 float strength = (modPlayer.miscTimer % 30f) / 15f;
                 if (strength > 1f)
                 {
@@ -1799,14 +1801,14 @@ namespace Bluemagic
                 }
                 strength = 0.1f + strength * 0.2f;
                 DrawData data = new DrawData(texture, new Vector2(drawX, drawY), null, Color.White * strength, 0f, new Vector2(texture.Width / 2f, texture.Height / 2f), 1f, SpriteEffects.None, 0);
-                data.shader = drawInfo.bodyArmorShader;
+                data.shader = drawInfo.cBody;
                 Main.playerDrawData.Add(data);
             }
             if (modPlayer.purityShieldMount)
             {
                 Texture2D texture = mod.GetTexture("Mounts/PurityShield");
-                int drawX = (int)(drawInfo.position.X + drawPlayer.width / 2f - Main.screenPosition.X);
-                int drawY = (int)(drawInfo.position.Y + drawPlayer.height / 2f - Main.screenPosition.Y);
+                int drawX = (int)(drawInfo.Position.X + drawPlayer.width / 2f - Main.screenPosition.X);
+                int drawY = (int)(drawInfo.Position.Y + drawPlayer.height / 2f - Main.screenPosition.Y);
                 float strength = (modPlayer.miscTimer % 30f) / 15f;
                 if (strength > 1f)
                 {
@@ -1824,7 +1826,7 @@ namespace Bluemagic
                 Main.playerDrawData.Add(data);
             }
         });
-        public static readonly PlayerLayer RedLine = new PlayerLayer("Bluemagic", "RedLine", delegate(PlayerDrawInfo drawInfo)
+        public static readonly PlayerLayer RedLine = new PlayerLayer("Bluemagic", "RedLine", delegate(PlayerDrawSet drawInfo)
         {
             if (drawInfo.shadow != 0f)
             {
@@ -1836,7 +1838,7 @@ namespace Bluemagic
                 return;
             }
             Mod mod = ModLoader.GetMod("Bluemagic");
-            if (drawPlayer.inventory[drawPlayer.selectedItem].type == mod.ItemType("CleanserBeam"))
+            if (drawPlayer.inventory[drawPlayer.selectedItem].type == mod.Find<ModItem>("CleanserBeam").Type)
             {
                 Texture2D texture = mod.GetTexture("RedLine");
                 Vector2 origin = drawPlayer.RotatedRelativePoint(drawPlayer.MountedCenter, true);
@@ -1852,19 +1854,19 @@ namespace Bluemagic
                 }
             }
         });
-        public static readonly PlayerLayer PreHeldItem = new PlayerLayer("Bluemagic", "PreHeldItem", PlayerLayer.HeldItem, delegate(PlayerDrawInfo drawInfo)
+        public static readonly PlayerLayer PreHeldItem = new PlayerLayer("Bluemagic", "PreHeldItem", PlayerLayer.HeldItem, delegate(PlayerDrawSet drawInfo)
         {
             Mod mod = Bluemagic.Instance;
-            Main.itemTexture[mod.ItemType("ChaosCrystal")] = mod.GetTexture("Items/ChaosSpirit/ChaosCrystalNoAnim");
-            Main.itemTexture[mod.ItemType("CataclysmCrystal")] = mod.GetTexture("Items/ChaosSpirit/CataclysmCrystalNoAnim");
+            TextureAssets.Item[mod.Find<ModItem>("ChaosCrystal").Type].Value = mod.GetTexture("Items/ChaosSpirit/ChaosCrystalNoAnim");
+            TextureAssets.Item[mod.Find<ModItem>("CataclysmCrystal").Type].Value = mod.GetTexture("Items/ChaosSpirit/CataclysmCrystalNoAnim");
         });
-        public static readonly PlayerLayer PostHeldItem = new PlayerLayer("Bluemagic", "PostHeldItem", PlayerLayer.HeldItem, delegate(PlayerDrawInfo drawInfo)
+        public static readonly PlayerLayer PostHeldItem = new PlayerLayer("Bluemagic", "PostHeldItem", PlayerLayer.HeldItem, delegate(PlayerDrawSet drawInfo)
         {
             Mod mod = Bluemagic.Instance;
-            Main.itemTexture[mod.ItemType("ChaosCrystal")] = mod.GetTexture("Items/ChaosSpirit/ChaosCrystal");
-            Main.itemTexture[mod.ItemType("CataclysmCrystal")] = mod.GetTexture("Items/ChaosSpirit/CataclysmCrystal");
+            TextureAssets.Item[mod.Find<ModItem>("ChaosCrystal").Type].Value = mod.GetTexture("Items/ChaosSpirit/ChaosCrystal");
+            TextureAssets.Item[mod.Find<ModItem>("CataclysmCrystal").Type].Value = mod.GetTexture("Items/ChaosSpirit/CataclysmCrystal");
         });
-        public static readonly PlayerLayer Transform = new PlayerLayer("Bluemagic", "Transform", delegate (PlayerDrawInfo info)
+        public static readonly PlayerLayer Transform = new PlayerLayer("Bluemagic", "Transform", delegate (PlayerDrawSet info)
         {
             BluemagicPlayer modPlayer = info.drawPlayer.GetModPlayer<BluemagicPlayer>();
             if (modPlayer.liquified > 0)
@@ -1894,7 +1896,7 @@ namespace Bluemagic
                 {
                     a = 0;
                 }
-                DrawData item = new DrawData(Main.npcTexture[1], info.drawPlayer.position - Main.screenPosition, new Rectangle(0, frame, 32, 26), new Color(r, g, b, a));
+                DrawData item = new DrawData(TextureAssets.Npc[1].Value, info.drawPlayer.position - Main.screenPosition, new Rectangle(0, frame, 32, 26), new Color(r, g, b, a));
                 Main.playerDrawData.Add(item);
                 r = (int)(lightColor.R - (255 - color.R));
                 g = (int)(lightColor.G - (255 - color.G));
@@ -1916,7 +1918,7 @@ namespace Bluemagic
                 {
                     a = 0;
                 }
-                item = new DrawData(Main.npcTexture[1], info.drawPlayer.position - Main.screenPosition, new Rectangle(0, frame, 32, 26), new Color(r, g, b, a));
+                item = new DrawData(TextureAssets.Npc[1].Value, info.drawPlayer.position - Main.screenPosition, new Rectangle(0, frame, 32, 26), new Color(r, g, b, a));
                 Main.playerDrawData.Add(item);
             }
         });

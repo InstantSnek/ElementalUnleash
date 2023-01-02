@@ -11,13 +11,13 @@ namespace Bluemagic.Items.PuritySpirit
     {
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.rare = 1;
-            item.vanity = true;
+            Item.width = 18;
+            Item.height = 18;
+            Item.rare = 1;
+            Item.vanity = true;
         }
 
-        public override bool DrawHead()
+        public override bool DrawHead()/* tModPorter Note: Removed. In SetStaticDefaults, use ArmorIDs.Head.Sets.DrawHead[Item.headSlot] = false if you returned false */
         {
             return false;
         }

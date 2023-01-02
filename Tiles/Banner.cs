@@ -11,7 +11,7 @@ namespace Bluemagic.Tiles
 {
 	public class Banner : ModTile
 	{
-		public override void SetDefaults() {
+		public override void SetStaticDefaults() {
 			Main.tileFrameImportant[Type] = true;
 			Main.tileNoAttach[Type] = true;
 			Main.tileLavaDeath[Type] = true;
@@ -22,8 +22,8 @@ namespace Bluemagic.Tiles
 			TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom, TileObjectData.newTile.Width, 0);
 			TileObjectData.newTile.StyleWrapLimit = 111;
 			TileObjectData.addTile(Type);
-			dustType = -1;
-			disableSmartCursor = true;
+			DustType = -1;
+			disableSmartCursor/* tModPorter Note: Removed. Use TileID.Sets.DisableSmartCursor instead */ = true;
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Banner");
 			AddMapEntry(new Color(13, 88, 130), name);
@@ -42,13 +42,13 @@ namespace Bluemagic.Tiles
 				default:
 					return;
 			}
-			Item.NewItem(i * 16, j * 16, 16, 48, mod.ItemType(item));
+			Item.NewItem(i * 16, j * 16, 16, 48, Mod.Find<ModItem>(item).Type);
 		}
 
 		public override void NearbyEffects(int i, int j, bool closer) {
 			if (closer) {
 				Player player = Main.LocalPlayer;
-				int style = Main.tile[i, j].frameX / 18;
+				int style = Main.tile[i, j].TileFrameX / 18;
 				string type;
 				switch (style) {
 					case 0:
@@ -60,7 +60,7 @@ namespace Bluemagic.Tiles
 					default:
 						return;
 				}
-				player.NPCBannerBuff[mod.NPCType(type)] = true;
+				player.NPCBannerBuff[Mod.Find<ModNPC>(type).Type] = true;
 				player.hasBanner = true;
 			}
 		}

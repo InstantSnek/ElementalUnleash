@@ -15,15 +15,15 @@ namespace Bluemagic.Items.Abomination
 
         public override void SetDefaults()
         {
-            item.maxStack = 999;
-            item.consumable = true;
-            item.width = 24;
-            item.height = 24;
-            item.rare = 11;
-            item.expert = true;
+            Item.maxStack = 999;
+            Item.consumable = true;
+            Item.width = 24;
+            Item.height = 24;
+            Item.rare = 11;
+            Item.expert = true;
         }
 
-        public override int BossBagNPC => mod.NPCType("Abomination");
+        public override int BossBagNPC => Mod.Find<ModNPC>("Abomination").Type;
 
         public override bool CanRightClick()
         {
@@ -35,29 +35,29 @@ namespace Bluemagic.Items.Abomination
             player.TryGettingDevArmor();
             if (Main.rand.Next(7) == 0)
             {
-                player.QuickSpawnItem(mod.ItemType("AbominationMask"));
+                player.QuickSpawnItem(Mod.Find<ModItem>("AbominationMask").Type);
             }
-            player.QuickSpawnItem(mod.ItemType("MoltenDrill"));
-            player.QuickSpawnItem(mod.ItemType("DimensionalChest"));
-            player.QuickSpawnItem(mod.ItemType("MoltenBar"), 5);
-            player.QuickSpawnItem(mod.ItemType("SixColorShield"));
-            player.QuickSpawnItem(mod.ItemType("ElementalEye"));
+            player.QuickSpawnItem(Mod.Find<ModItem>("MoltenDrill").Type);
+            player.QuickSpawnItem(Mod.Find<ModItem>("DimensionalChest").Type);
+            player.QuickSpawnItem(Mod.Find<ModItem>("MoltenBar").Type, 5);
+            player.QuickSpawnItem(Mod.Find<ModItem>("SixColorShield").Type);
+            player.QuickSpawnItem(Mod.Find<ModItem>("ElementalEye").Type);
             switch (Main.rand.Next(5))
             {
             case 0:
-                player.QuickSpawnItem(mod.ItemType("ElementalYoyo"));
+                player.QuickSpawnItem(Mod.Find<ModItem>("ElementalYoyo").Type);
                 break;
             case 1:
-                player.QuickSpawnItem(mod.ItemType("ElementalSprayer"));
+                player.QuickSpawnItem(Mod.Find<ModItem>("ElementalSprayer").Type);
                 break;
             case 2:
-                player.QuickSpawnItem(mod.ItemType("EyeballTome"));
+                player.QuickSpawnItem(Mod.Find<ModItem>("EyeballTome").Type);
                 break;
             case 3:
-                player.QuickSpawnItem(mod.ItemType("ElementalStaff"));
+                player.QuickSpawnItem(Mod.Find<ModItem>("ElementalStaff").Type);
                 break;
             case 4:
-                player.QuickSpawnItem(mod.ItemType("EyeballGlove"));
+                player.QuickSpawnItem(Mod.Find<ModItem>("EyeballGlove").Type);
                 break;
             }
         }
