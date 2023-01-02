@@ -89,7 +89,7 @@ namespace Bluemagic
             Overlays.Scene["Bluemagic:WorldReaver"] = new WorldReaverOverlay();
             if (!Main.dedServ)
             {
-                Filters.Scene["Bluemagic:WorldReaver"] = new Filter(new ScreenShaderData(new Ref<Effect>(GetEffect("Effects/WorldReaver")), "WorldReaver"), EffectPriority.VeryHigh);
+                Filters.Scene["Bluemagic:WorldReaver"] = new Filter(new ScreenShaderData(new Ref<Effect>(Assets.Request<Effect>("Effects/WorldReaver").Value), "WorldReaver"), EffectPriority.VeryHigh);
             }
         }
 
@@ -534,7 +534,7 @@ namespace Bluemagic
         {
             if (!Main.gameMenu && BlushieBoss.BlushieBoss.Active && BlushieBoss.BlushieBoss.Phase >= 3)
             {
-                music = GetSoundSlot(SoundType.Music, "Sounds/Music/Fallen Blood");
+                music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Fallen Blood");
                 priority = SceneEffectPriority.BossHigh;
             }
         }

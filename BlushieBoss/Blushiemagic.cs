@@ -17,7 +17,7 @@ namespace Bluemagic.BlushieBoss
         public override void SetDefaults()
         {
             base.SetDefaults();
-            this.Music = Mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Shelter");
+            this.Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Shelter");
             NPC.takenDamageMultiplier = 10f;
         }
 
